@@ -24,26 +24,26 @@ func TestInstalledCodecs(t *testing.T) {
 	assert.Equal(t, len(InstalledCodecs), 3, "Should be three codecs installed.")
 }
 
-func TestGetCodecForRequest(t *testing.T) {
+func TestGetCodec(t *testing.T) {
 
 	service := new(WebCodecService)
 	var codec codecs.Codec
 
-	codec, _ = service.GetCodecForRequest(web.ContentTypeJson)
+	codec, _ = service.GetCodec(web.ContentTypeJson)
 
 	if assert.NotNil(t, codec, "Json should exist") {
 		assert.Equal(t, web.ContentTypeJson, codec.ContentType(), "ContentTypeJson")
 	}
 
 	// case insensitivity
-	codec, _ = service.GetCodecForRequest(strings.ToUpper(web.ContentTypeJson))
+	codec, _ = service.GetCodec(strings.ToUpper(web.ContentTypeJson))
 
 	if assert.NotNil(t, codec, "Content case should not matter") {
 		assert.Equal(t, web.ContentTypeJson, codec.ContentType(), "ContentTypeJson")
 	}
 
 	// default
-	codec, _ = service.GetCodecForRequest("")
+	codec, _ = service.GetCodec("")
 
 	if assert.NotNil(t, codec, "Empty contentType string should assume JSON") {
 		assert.Equal(t, web.ContentTypeJson, codec.ContentType(), "Should assume JSON.")

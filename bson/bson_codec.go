@@ -1,7 +1,7 @@
 package bson
 
 import (
-	"github.com/stretchrcom/web"
+	"github.com/stretchrcom/codecs/constants"
 	"labix.org/v2/mgo/bson"
 )
 
@@ -20,12 +20,12 @@ func (b *BsonCodec) Unmarshal(data []byte, obj interface{}) error {
 
 // ContentType returns the content type for this codec.
 func (b *BsonCodec) ContentType() string {
-	return web.ContentTypeBson
+	return constants.ContentTypeBSON
 }
 
-// FileExtensions returns the file extension for this codec.
-func (b *BsonCodec) FileExtensions() string {
-	return web.FileExtensionBson
+// FileExtension returns the file extension for this codec.
+func (b *BsonCodec) FileExtension() string {
+	return constants.FileExtensionBSON
 }
 
 // CanMarshalWithCallback returns whether this codec is capable of marshalling a response containing a callback.

@@ -37,9 +37,9 @@ func (c *TestCodec) ContentType() string {
 	return c.Mock.Called().String(0)
 }
 
-// FileExtensions is a mocked function that records the activity in the Mock object and
+// FileExtension is a mocked function that records the activity in the Mock object and
 // returns the values setup in user code by the .On.Return pair.
-func (c *TestCodec) FileExtensions() string {
+func (c *TestCodec) FileExtension() string {
 	return c.Mock.Called().String(0)
 }
 

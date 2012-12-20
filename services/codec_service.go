@@ -22,7 +22,7 @@ type CodecService interface {
 
 	// GetCodecForRequest gets the codec to use to interpret the request based on the
 	// content type.
-	GetCodecForRequest(contentType string) (codecs.Codec, error)
+	GetCodec(contentType string) (codecs.Codec, error)
 
 	// MarshalWithCodec marshals the specified object with the specified codec and options.
 	// If the object implements the Facade interface, the PublicData object should be

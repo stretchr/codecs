@@ -2,9 +2,8 @@ package jsonp
 
 import (
 	"github.com/stretchrcom/codecs"
-	"github.com/stretchrcom/stretchr/constants"
+	"github.com/stretchrcom/codecs/constants"
 	"github.com/stretchrcom/testify/assert"
-	"github.com/stretchrcom/web"
 	"testing"
 )
 
@@ -17,14 +16,14 @@ func TestInterface(t *testing.T) {
 func TestResponseContentType(t *testing.T) {
 
 	codec := new(JsonPCodec)
-	assert.Equal(t, codec.ContentType(), web.ContentTypeJavaScript)
+	assert.Equal(t, codec.ContentType(), constants.ContentTypeJSONP)
 
 }
 
-func TestFileExtensions(t *testing.T) {
+func TestFileExtension(t *testing.T) {
 
 	codec := new(JsonPCodec)
-	assert.Equal(t, web.FileExtensionJavaScript, codec.FileExtensions())
+	assert.Equal(t, constants.FileExtensionJSONP, codec.FileExtension())
 
 }
 
