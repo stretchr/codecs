@@ -11,13 +11,13 @@ You can get stuck into the API documentation by checking out these API docs:
 
 ## How to use the codecs package
 
-	  // make a codec service
+	// make a codec service
     codecService := new(WebCodecService)
 
     // get the content type (probably from the request)
-		var contentType string = "application/json"
+	var contentType string = "application/json"
 
-		// get the codec
+	// get the codec
     codec, err := codecService.GetCodec(contentType)
 
     if err != nil {
@@ -28,8 +28,8 @@ You can get stuck into the API documentation by checking out these API docs:
     	[]bytes to object
     */
 
-		// get the raw data
-		dataBytes := []byte(`{"somedata": true}`)
+	// get the raw data
+	dataBytes := []byte(`{"somedata": true}`)
 
     // use the codec to unmarshal the dataBytes
     var obj interface{}
