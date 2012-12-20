@@ -4,7 +4,6 @@ import (
 	"github.com/stretchrcom/codecs"
 	"github.com/stretchrcom/codecs/constants"
 	"github.com/stretchrcom/testify/assert"
-	"github.com/stretchrcom/web"
 	"testing"
 )
 
@@ -49,7 +48,7 @@ func TestUnmarshal(t *testing.T) {
 func TestResponseContentType(t *testing.T) {
 
 	codec := new(BsonCodec)
-	assert.Equal(t, codec.ContentType(), web.ContentTypeBson)
+	assert.Equal(t, codec.ContentType(), constants.ContentTypeBSON)
 }
 
 func TestFileExtension(t *testing.T) {

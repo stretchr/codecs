@@ -4,9 +4,9 @@ import (
 	"errors"
 	"github.com/stretchrcom/codecs"
 	"github.com/stretchrcom/codecs/bson"
+	"github.com/stretchrcom/codecs/constants"
 	"github.com/stretchrcom/codecs/json"
 	"github.com/stretchrcom/codecs/jsonp"
-	"github.com/stretchrcom/web"
 	"strings"
 )
 
@@ -53,7 +53,7 @@ func (s *WebCodecService) GetCodec(contentType string) (codecs.Codec, error) {
 	for _, codec := range InstalledCodecs {
 
 		// default codec
-		if contentType == "" && codec.ContentType() == web.ContentTypeJson {
+		if contentType == "" && codec.ContentType() == constants.ContentTypeJSON {
 			return codec, nil
 		}
 

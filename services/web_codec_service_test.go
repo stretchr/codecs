@@ -2,11 +2,11 @@ package services
 
 import (
 	"github.com/stretchrcom/codecs"
+	"github.com/stretchrcom/codecs/constants"
 	"github.com/stretchrcom/codecs/test"
 	"github.com/stretchrcom/objects"
 	"github.com/stretchrcom/testify/assert"
 	"github.com/stretchrcom/testify/mock"
-	"github.com/stretchrcom/web"
 	"strings"
 	"testing"
 )
@@ -29,24 +29,24 @@ func TestGetCodec(t *testing.T) {
 	service := new(WebCodecService)
 	var codec codecs.Codec
 
-	codec, _ = service.GetCodec(web.ContentTypeJson)
+	codec, _ = service.GetCodec(constants.ContentTypeJSON)
 
 	if assert.NotNil(t, codec, "Json should exist") {
-		assert.Equal(t, web.ContentTypeJson, codec.ContentType(), "ContentTypeJson")
+		assert.Equal(t, constants.ContentTypeJSON, codec.ContentType(), "ContentTypeJson")
 	}
 
 	// case insensitivity
-	codec, _ = service.GetCodec(strings.ToUpper(web.ContentTypeJson))
+	codec, _ = service.GetCodec(strings.ToUpper(constants.ContentTypeJSON))
 
 	if assert.NotNil(t, codec, "Content case should not matter") {
-		assert.Equal(t, web.ContentTypeJson, codec.ContentType(), "ContentTypeJson")
+		assert.Equal(t, constants.ContentTypeJSON, codec.ContentType(), "ContentTypeJson")
 	}
 
 	// default
 	codec, _ = service.GetCodec("")
 
 	if assert.NotNil(t, codec, "Empty contentType string should assume JSON") {
-		assert.Equal(t, web.ContentTypeJson, codec.ContentType(), "Should assume JSON.")
+		assert.Equal(t, constants.ContentTypeJSON, codec.ContentType(), "Should assume JSON.")
 	}
 
 }
@@ -59,7 +59,7 @@ func TestGetCodecForResponding_DefaultCodec(t *testing.T) {
 	codec, _ = service.GetCodecForResponding("", "", false)
 
 	if assert.NotNil(t, codec, "Return of GetCodecForAcceptStringOrExtension should default to JSON") {
-		assert.Equal(t, web.ContentTypeJson, codec.ContentType(), "Should default to JSON")
+		assert.Equal(t, constants.ContentTypeJSON, codec.ContentType(), "Should default to JSON")
 	}
 
 }
@@ -74,7 +74,7 @@ func TestGetCodecForResponding(t *testing.T) {
 	codec, _ = service.GetCodecForResponding("something/something,application/json,text/xml", "", false)
 
 	if assert.NotNil(t, codec, "Return of GetCodecForAcceptStringOrExtension") {
-		assert.Equal(t, web.ContentTypeJson, codec.ContentType(), "ContentTypeJson 1")
+		assert.Equal(t, constants.ContentTypeJSON, codec.ContentType(), "ContentTypeJson 1")
 	}
 
 	// JSON - accept header (case)
@@ -82,15 +82,15 @@ func TestGetCodecForResponding(t *testing.T) {
 	codec, _ = service.GetCodecForResponding("something/something,application/JSON,text/xml", "", false)
 
 	if assert.NotNil(t, codec, "Case should not matter") {
-		assert.Equal(t, web.ContentTypeJson, codec.ContentType(), "Case should not matter")
+		assert.Equal(t, constants.ContentTypeJSON, codec.ContentType(), "Case should not matter")
 	}
 
 	// JSON - file extension
 
-	codec, _ = service.GetCodecForResponding("", web.FileExtensionJson, false)
+	codec, _ = service.GetCodecForResponding("", constants.FileExtensionJSON, false)
 
 	if assert.NotNil(t, codec, "Return of GetCodecForAcceptStringOrExtension") {
-		assert.Equal(t, web.ContentTypeJson, codec.ContentType(), "ContentTypeJson")
+		assert.Equal(t, constants.ContentTypeJSON, codec.ContentType(), "ContentTypeJson")
 	}
 
 	// JSONP - has callback
@@ -98,23 +98,23 @@ func TestGetCodecForResponding(t *testing.T) {
 	codec, _ = service.GetCodecForResponding("", "", true)
 
 	if assert.NotNil(t, codec, "Should return the first codec that can handle a callback") {
-		assert.Equal(t, web.ContentTypeJavaScript, codec.ContentType(), "ContentTypeJavaScript")
+		assert.Equal(t, constants.ContentTypeJSONP, codec.ContentType(), "ContentTypeJavaScript")
 	}
 
 	// JSONP - file extension
 
-	codec, _ = service.GetCodecForResponding("", web.FileExtensionJavaScript, false)
+	codec, _ = service.GetCodecForResponding("", constants.FileExtensionJSONP, false)
 
 	if assert.NotNil(t, codec, "Return of GetCodecForAcceptStringOrExtension") {
-		assert.Equal(t, web.ContentTypeJavaScript, codec.ContentType(), "ContentTypeJavaScript")
+		assert.Equal(t, constants.ContentTypeJSONP, codec.ContentType(), "ContentTypeJavaScript")
 	}
 
 	// JSONP - file extension (case)
 
-	codec, _ = service.GetCodecForResponding("", strings.ToUpper(web.FileExtensionJavaScript), false)
+	codec, _ = service.GetCodecForResponding("", strings.ToUpper(constants.FileExtensionJSONP), false)
 
 	if assert.NotNil(t, codec, "Return of GetCodecForAcceptStringOrExtension") {
-		assert.Equal(t, web.ContentTypeJavaScript, codec.ContentType(), "ContentTypeJavaScript 4")
+		assert.Equal(t, constants.ContentTypeJSONP, codec.ContentType(), "ContentTypeJavaScript 4")
 	}
 
 	// JSONP - Accept header
@@ -122,7 +122,7 @@ func TestGetCodecForResponding(t *testing.T) {
 	codec, _ = service.GetCodecForResponding("something/something,text/javascript,text/xml", "", false)
 
 	if assert.NotNil(t, codec, "Return of GetCodecForAcceptStringOrExtension") {
-		assert.Equal(t, web.ContentTypeJavaScript, codec.ContentType(), "ContentTypeJavaScript 5")
+		assert.Equal(t, constants.ContentTypeJSONP, codec.ContentType(), "ContentTypeJavaScript 5")
 	}
 
 }
