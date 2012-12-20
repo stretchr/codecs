@@ -3,9 +3,8 @@ package jsonp
 import (
 	jsonEncoding "encoding/json"
 	"errors"
-	"github.com/stretchrcom/stretchr/constants"
+	"github.com/stretchrcom/codecs/constants"
 	"github.com/stretchrcom/stringy"
-	"github.com/stretchrcom/web"
 )
 
 // ErrorMissingCallback is the error for when a callback option is expected but missing.
@@ -55,12 +54,12 @@ func (c *JsonPCodec) Unmarshal(data []byte, obj interface{}) error {
 
 // ContentType returns the content type for this codec.
 func (c *JsonPCodec) ContentType() string {
-	return web.ContentTypeJavaScript
+	return constants.ContentTypeJSONP
 }
 
-// FileExtensions returns the file extension for this codec.
-func (c *JsonPCodec) FileExtensions() string {
-	return web.FileExtensionJavaScript
+// FileExtension returns the file extension for this codec.
+func (c *JsonPCodec) FileExtension() string {
+	return constants.FileExtensionJSONP
 }
 
 // CanMarshalWithCallback returns whether this codec is capable of marshalling a response containing a callback.

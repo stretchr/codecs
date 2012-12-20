@@ -9,10 +9,9 @@ type Codec interface {
 	Unmarshal(data []byte, obj interface{}) error
 	// ContentType gets the content type that this codec handles.
 	ContentType() string
-	// FileExtensions holds a comma separated list of the file extensions that this
-	// codec can support.
-	FileExtensions() string
+	// FileExtension returns the file extension by which this codec is represented.
+	FileExtension() string
 	// CanMarshalWithCallback indicates whether this codec is capable of marshalling a response with
-	// a callback parameter. 
+	// a callback parameter.
 	CanMarshalWithCallback() bool
 }

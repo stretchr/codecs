@@ -36,7 +36,7 @@ func (s *WebCodecService) GetCodecForResponding(accept, extension string, hasCal
 	for _, codec := range InstalledCodecs {
 		if strings.Contains(strings.ToLower(accept), strings.ToLower(codec.ContentType())) {
 			return codec, nil
-		} else if strings.ToLower(codec.FileExtensions()) == strings.ToLower(extension) {
+		} else if strings.ToLower(codec.FileExtension()) == strings.ToLower(extension) {
 			return codec, nil
 		} else if hasCallback && codec.CanMarshalWithCallback() {
 			return codec, nil
@@ -48,7 +48,7 @@ func (s *WebCodecService) GetCodecForResponding(accept, extension string, hasCal
 
 // GetCodecForRequest gets the codec to use to interpret the request based on the
 // content type.
-func (s *WebCodecService) GetCodecForRequest(contentType string) (codecs.Codec, error) {
+func (s *WebCodecService) GetCodec(contentType string) (codecs.Codec, error) {
 
 	for _, codec := range InstalledCodecs {
 

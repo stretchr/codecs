@@ -2,6 +2,7 @@ package bson
 
 import (
 	"github.com/stretchrcom/codecs"
+	"github.com/stretchrcom/codecs/constants"
 	"github.com/stretchrcom/testify/assert"
 	"github.com/stretchrcom/web"
 	"testing"
@@ -51,10 +52,10 @@ func TestResponseContentType(t *testing.T) {
 	assert.Equal(t, codec.ContentType(), web.ContentTypeBson)
 }
 
-func TestFileExtensions(t *testing.T) {
+func TestFileExtension(t *testing.T) {
 
 	codec := new(BsonCodec)
-	assert.Equal(t, web.FileExtensionBson, codec.FileExtensions())
+	assert.Equal(t, constants.FileExtensionBSON, codec.FileExtension())
 
 }
 

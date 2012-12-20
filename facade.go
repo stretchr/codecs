@@ -14,7 +14,7 @@ const (
 )
 
 var (
-	// PublicDataDidNotFindMap is returned when the PublicData func fails to discover an appropriate 
+	// PublicDataDidNotFindMap is returned when the PublicData func fails to discover an appropriate
 	// public data object, which must end up being a map[string]interface{}.
 	PublicDataDidNotFindMap = errors.New("codecs: Object doesn't implement Facade interface and is not a Data object. PublicData(object) failed.")
 

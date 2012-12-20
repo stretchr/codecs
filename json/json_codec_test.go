@@ -2,6 +2,7 @@ package json
 
 import (
 	"github.com/stretchrcom/codecs"
+	"github.com/stretchrcom/codecs/constants"
 	"github.com/stretchrcom/testify/assert"
 	"github.com/stretchrcom/web"
 	"testing"
@@ -53,10 +54,10 @@ func TestResponseContentType(t *testing.T) {
 
 }
 
-func TestFileExtensions(t *testing.T) {
+func TestFileExtension(t *testing.T) {
 
 	codec := new(JsonCodec)
-	assert.Equal(t, web.FileExtensionJson, codec.FileExtensions())
+	assert.Equal(t, constants.FileExtensionJSON, codec.FileExtension())
 
 }
 

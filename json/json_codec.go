@@ -2,7 +2,7 @@ package json
 
 import (
 	jsonEncoding "encoding/json"
-	"github.com/stretchrcom/web"
+	"github.com/stretchrcom/codecs/constants"
 )
 
 // JsonCodec converts objects to and from JSON.
@@ -20,12 +20,12 @@ func (c *JsonCodec) Unmarshal(data []byte, obj interface{}) error {
 
 // ContentType returns the content type for this codec.
 func (c *JsonCodec) ContentType() string {
-	return web.ContentTypeJson
+	return constants.ContentTypeJSON
 }
 
-// FileExtensions returns the file extension for this codec.
-func (c *JsonCodec) FileExtensions() string {
-	return web.FileExtensionJson
+// FileExtension returns the file extension for this codec.
+func (c *JsonCodec) FileExtension() string {
+	return constants.FileExtensionJSON
 }
 
 // CanMarshalWithCallback returns whether this codec is capable of marshalling a response containing a callback.
