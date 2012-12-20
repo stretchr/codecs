@@ -46,7 +46,7 @@ func (s *WebCodecService) GetCodecForResponding(accept, extension string, hasCal
 	return InstalledCodecs[0], nil
 }
 
-// GetCodecForRequest gets the codec to use to interpret the request based on the
+// GetCodec gets the codec to use to interpret the request based on the
 // content type.
 func (s *WebCodecService) GetCodec(contentType string) (codecs.Codec, error) {
 

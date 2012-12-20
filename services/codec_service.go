@@ -20,7 +20,7 @@ type CodecService interface {
 	// or not.
 	GetCodecForResponding(accept, extension string, hasCallback bool) (codecs.Codec, error)
 
-	// GetCodecForRequest gets the codec to use to interpret the request based on the
+	// GetCodec gets the codec to use to interpret the request based on the
 	// content type.
 	GetCodec(contentType string) (codecs.Codec, error)
 
