@@ -4,7 +4,7 @@ import (
 	"github.com/stretchrcom/codecs"
 	"github.com/stretchrcom/codecs/constants"
 	"github.com/stretchrcom/codecs/test"
-	"github.com/stretchrcom/objects"
+	"github.com/stretchrcom/stew/objects"
 	"github.com/stretchrcom/testify/assert"
 	"github.com/stretchrcom/testify/mock"
 	"strings"

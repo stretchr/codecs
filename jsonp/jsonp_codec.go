@@ -4,7 +4,7 @@ import (
 	jsonEncoding "encoding/json"
 	"errors"
 	"github.com/stretchrcom/codecs/constants"
-	"github.com/stretchrcom/stringy"
+	stewstrings "github.com/stretchrcom/stew/strings"
 )
 
 // ErrorMissingCallback is the error for when a callback option is expected but missing.
@@ -39,9 +39,9 @@ func (c *JsonPCodec) Marshal(object interface{}, options map[string]interface{})
 	clientContextString, hasClientContext := options[constants.OptionKeyClientContext].(string)
 
 	if !hasClientContext {
-		callbackString = stringy.MergeStrings(options[constants.OptionKeyCallback].(string), "(", string(json), ");")
+		callbackString = stewstrings.MergeStrings(options[constants.OptionKeyCallback].(string), "(", string(json), ");")
 	} else {
-		callbackString = stringy.MergeStrings(options[constants.OptionKeyCallback].(string), "(", string(json), `,"`, clientContextString, `"`, ");")
+		callbackString = stewstrings.MergeStrings(options[constants.OptionKeyCallback].(string), "(", string(json), `,"`, clientContextString, `"`, ");")
 	}
 
 	return []byte(callbackString), nil

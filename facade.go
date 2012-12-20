@@ -3,7 +3,7 @@ package codecs
 import (
 	"errors"
 	"fmt"
-	"github.com/stretchrcom/objects"
+	"github.com/stretchrcom/stew/objects"
 	"reflect"
 )
 
