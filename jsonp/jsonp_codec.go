@@ -39,9 +39,9 @@ func (c *JsonPCodec) Marshal(object interface{}, options map[string]interface{})
 	clientContextString, hasClientContext := options[constants.OptionKeyClientContext].(string)
 
 	if !hasClientContext {
-		callbackString = stringy.Merge(options[constants.OptionKeyCallback].(string), "(", string(json), ");")
+		callbackString = stringy.MergeStrings(options[constants.OptionKeyCallback].(string), "(", string(json), ");")
 	} else {
-		callbackString = stringy.Merge(options[constants.OptionKeyCallback].(string), "(", string(json), `,"`, clientContextString, `"`, ");")
+		callbackString = stringy.MergeStrings(options[constants.OptionKeyCallback].(string), "(", string(json), `,"`, clientContextString, `"`, ");")
 	}
 
 	return []byte(callbackString), nil
