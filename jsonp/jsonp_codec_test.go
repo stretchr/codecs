@@ -41,7 +41,7 @@ func TestMarshal(t *testing.T) {
 	obj := make(map[string]string)
 	obj["name"] = "Mat"
 
-	jsonPString, jsonPError := codec.Marshal(obj, map[string]interface{}{constants.OptionKeyCallback: "candyCorn", "not-relevant": true})
+	jsonPString, jsonPError := codec.Marshal(obj, map[string]interface{}{constants.OptionKeyClientCallback: "candyCorn", "not-relevant": true})
 
 	if jsonPError != nil {
 		t.Errorf("Shouldn't return error: %s", jsonPError)
@@ -58,7 +58,7 @@ func TestMarshal_WithContext(t *testing.T) {
 	obj := make(map[string]string)
 	obj["name"] = "Mat"
 
-	jsonPString, jsonPError := codec.Marshal(obj, map[string]interface{}{constants.OptionKeyCallback: "candyCorn", constants.OptionKeyClientContext: "halloween", "not-relevant": true})
+	jsonPString, jsonPError := codec.Marshal(obj, map[string]interface{}{constants.OptionKeyClientCallback: "candyCorn", constants.OptionKeyClientContext: "halloween", "not-relevant": true})
 
 	if jsonPError != nil {
 		t.Errorf("Shouldn't return error: %s", jsonPError)

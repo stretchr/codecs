@@ -14,6 +14,6 @@ const (
 )
 
 const (
-	OptionKeyCallback      string = "options.callback"
-	OptionKeyClientContext string = "options.context"
+	OptionKeyClientCallback string = "options.client.callback"
+	OptionKeyClientContext  string = "options.client.context"
 )

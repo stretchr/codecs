@@ -38,8 +38,8 @@ func (c *JsonPCodec) Marshal(object interface{}, options map[string]interface{})
 	var clientContextString string
 	var ok bool
 
-	if callbackFunctionName, ok = options[constants.OptionKeyCallback].(string); !ok {
-		panic("stretchrcom/codecs: JSONP requires the options to contain the constants.OptionKeyCallback value.")
+	if callbackFunctionName, ok = options[constants.OptionKeyClientCallback].(string); !ok {
+		panic("stretchrcom/codecs: JSONP requires the options to contain the constants.OptionKeyClientCallback value.")
 	}
 
 	clientContextString, hasClientContext := options[constants.OptionKeyClientContext].(string)
@@ -47,7 +47,7 @@ func (c *JsonPCodec) Marshal(object interface{}, options map[string]interface{})
 	if !hasClientContext {
 		callbackString = stewstrings.MergeStrings(callbackFunctionName, "(", string(json), ");")
 	} else {
-		callbackString = stewstrings.MergeStrings(options[constants.OptionKeyCallback].(string), "(", string(json), `,"`, clientContextString, `"`, ");")
+		callbackString = stewstrings.MergeStrings(options[constants.OptionKeyClientCallback].(string), "(", string(json), `,"`, clientContextString, `"`, ");")
 	}
 
 	return []byte(callbackString), nil
