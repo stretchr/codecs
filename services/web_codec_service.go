@@ -31,7 +31,18 @@ func (w *WebCodecService) TearDown() {
 // GetCodecForResponding gets the codec to use to respond based on the
 // given accept string, the extension provided and whether it has a callback
 // or not.
+//
+// As of now, if hasCallback is true, the JSONP codec will be returned.
+// This may be changed if additional callback capable codecs are added.
 func (s *WebCodecService) GetCodecForResponding(accept, extension string, hasCallback bool) (codecs.Codec, error) {
+
+	if hasCallback == true {
+		for _, codec := range InstalledCodecs {
+			if codec.ContentType() == constants.ContentTypeJSONP {
+				return codec, nil
+			}
+		}
+	}
 
 	for _, codec := range InstalledCodecs {
 		if strings.Contains(strings.ToLower(accept), strings.ToLower(codec.ContentType())) {
