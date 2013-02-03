@@ -81,7 +81,7 @@ func TestPublicData_WithRecursion_WithObjects(t *testing.T) {
 	o1 := new(test.TestObjectWithFacade)
 	o2 := new(test.TestObjectWithFacade)
 
-	args := map[string]interface{}{constants.OptionKeyClientCallback: "d"}
+	args := map[string]interface{}{constants.OptionKeyClientCallback: "~d"}
 
 	o.Mock.On("PublicData", args).Return(o1, nil)
 	o1.Mock.On("PublicData", args).Return(o2, nil)
