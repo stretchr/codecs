@@ -2,6 +2,7 @@ package services
 
 import (
 	"github.com/stretchrcom/codecs"
+	"github.com/stretchrcom/codecs/bson"
 	"github.com/stretchrcom/codecs/constants"
 	"github.com/stretchrcom/codecs/test"
 	"github.com/stretchrcom/stew/objects"
@@ -275,5 +276,27 @@ func TestUnmarshalWithCodec_WithError(t *testing.T) {
 
 	assert.Equal(t, assert.AnError, err)
 	mock.AssertExpectationsForObjects(t, testCodec.Mock)
+
+}
+
+func TestWebCodecService_MarshalAndUnmarshal(t *testing.T) {
+
+	data := objects.Map(map[string]interface{}{"key": "value", "key1": "value1"})
+	codec := new(bson.BsonCodec)
+
+	service := new(WebCodecService)
+
+	marshalled, err := service.MarshalWithCodec(codec, data, nil)
+
+	assert.Nil(t, err)
+
+	var unmarshalled map[string]interface{}
+
+	err = service.UnmarshalWithCodec(codec, marshalled, &unmarshalled)
+
+	if assert.Nil(t, err) {
+		assert.Equal(t, unmarshalled["key"], data["key"])
+		assert.Equal(t, unmarshalled["key1"], data["key1"])
+	}
 
 }
