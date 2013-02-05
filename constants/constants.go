@@ -5,12 +5,14 @@ package constants
 */
 
 const (
-	ContentTypeJSON    string = "application/json"
-	FileExtensionJSON  string = ".json"
-	ContentTypeJSONP   string = "text/javascript"
-	FileExtensionJSONP string = ".js"
-	ContentTypeBSON    string = "application/bson"
-	FileExtensionBSON  string = ".bson"
+	ContentTypeJSON      string = "application/json"
+	FileExtensionJSON    string = ".json"
+	ContentTypeJSONP     string = "text/javascript"
+	FileExtensionJSONP   string = ".js"
+	ContentTypeBSON      string = "application/bson"
+	FileExtensionBSON    string = ".bson"
+	ContentTypeMsgpack   string = "application/x-msgpack"
+	FileExtensionMsgpack string = ".msgpack"
 )
 
 const (
