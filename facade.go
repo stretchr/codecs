@@ -95,14 +95,14 @@ func publicData(object interface{}, level int, options map[string]interface{}) (
 	// if the object isn't map[string]interface{}, then we need
 	// to throw an error - because PublicData was unable to find an appropriate
 	// object.
-	var castObject map[string]interface{}
-	var ok bool
-	if castObject, ok = object.(objects.Map); !ok {
-		panic(fmt.Sprintf("codecs: Cannot call PublicData(%s) because it does not implement codecs.Facade (i.e. needs PublicData method) and is not a Data object.", reflect.TypeOf(object)))
-		return nil, PublicDataDidNotFindMap
+
+	if castObject, isMSI := object.(map[string]interface{}); isMSI {
+		return castObject, nil
+	}
+	if castObject, isMap := object.(objects.Map); isMap {
+		return castObject, nil
 	}
 
-	// return the object
-	return castObject, nil
-
+	panic(fmt.Sprintf("codecs: Cannot call PublicData(%s) because it does not implement codecs.Facade (i.e. needs PublicData method) and is not a Data object.", reflect.TypeOf(object)))
+	return nil, PublicDataDidNotFindMap
 }
