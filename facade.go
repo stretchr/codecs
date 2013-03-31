@@ -104,5 +104,4 @@ func publicData(object interface{}, level int, options map[string]interface{}) (
 	}
 
 	panic(fmt.Sprintf("codecs: Cannot call PublicData(%s) because it does not implement codecs.Facade (i.e. needs PublicData method) and is not a Data object.", reflect.TypeOf(object)))
-	return nil, PublicDataDidNotFindMap
 }
