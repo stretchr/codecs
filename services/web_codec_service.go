@@ -64,14 +64,15 @@ func (s *WebCodecService) GetCodec(contentType string) (codecs.Codec, error) {
 	for _, codec := range InstalledCodecs {
 
 		// default codec
-		if contentType == "" && codec.ContentType() == constants.ContentTypeJSON {
+		if len(contentType) == 0 && codec.ContentType() == constants.ContentTypeJSON {
 			return codec, nil
 		}
 
 		// match the content type
-		if strings.ToLower(contentType) == strings.ToLower(codec.ContentType()) {
+		if strings.Contains(strings.ToLower(contentType), strings.ToLower(codec.ContentType())) {
 			return codec, nil
 		}
+
 	}
 
 	return nil, errors.New(fmt.Sprintf("Content type \"%s\" is not supported.", contentType))

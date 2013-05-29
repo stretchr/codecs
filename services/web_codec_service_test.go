@@ -1,6 +1,7 @@
 package services
 
 import (
+	"fmt"
 	"github.com/stretchrcom/codecs"
 	"github.com/stretchrcom/codecs/constants"
 	"github.com/stretchrcom/codecs/test"
@@ -39,6 +40,12 @@ func TestGetCodec(t *testing.T) {
 	codec, _ = service.GetCodec(strings.ToUpper(constants.ContentTypeJSON))
 
 	if assert.NotNil(t, codec, "Content case should not matter") {
+		assert.Equal(t, constants.ContentTypeJSON, codec.ContentType(), "ContentTypeJson")
+	}
+
+	// with noise
+	codec, _ = service.GetCodec(fmt.Sprintf("%s; charset=UTF-8", constants.ContentTypeJSON))
+	if assert.NotNil(t, codec, "charset in Content-Type should not matter") {
 		assert.Equal(t, constants.ContentTypeJSON, codec.ContentType(), "ContentTypeJson")
 	}
 
