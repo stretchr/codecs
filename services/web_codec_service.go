@@ -2,6 +2,7 @@ package services
 
 import (
 	"errors"
+	"fmt"
 	"github.com/stretchrcom/codecs"
 	"github.com/stretchrcom/codecs/constants"
 	"github.com/stretchrcom/codecs/json"
@@ -73,7 +74,7 @@ func (s *WebCodecService) GetCodec(contentType string) (codecs.Codec, error) {
 		}
 	}
 
-	return nil, ErrorContentTypeNotSupported
+	return nil, errors.New(fmt.Sprintf("Content type \"%s\" is not supported.", contentType))
 
 }
 
