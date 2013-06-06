@@ -38,7 +38,8 @@ func (w *WebCodecService) TearDown() {
 // This may be changed if additional callback capable codecs are added.
 func (s *WebCodecService) GetCodecForResponding(accept, extension string, hasCallback bool) (codecs.Codec, error) {
 
-	if hasCallback == true {
+	// is there a callback?  If so, look for JSONP
+	if hasCallback {
 		for _, codec := range InstalledCodecs {
 			if codec.ContentType() == constants.ContentTypeJSONP {
 				return codec, nil
@@ -56,6 +57,7 @@ func (s *WebCodecService) GetCodecForResponding(accept, extension string, hasCal
 		}
 	}
 
+	// return the first installed codec by default
 	return InstalledCodecs[0], nil
 }
 
