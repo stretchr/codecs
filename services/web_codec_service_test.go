@@ -22,7 +22,7 @@ func TestInterface(t *testing.T) {
 
 func TestInstalledCodecs(t *testing.T) {
 	assert.NotNil(t, InstalledCodecs, "InstalledCodecs")
-	assert.Equal(t, len(InstalledCodecs), 2, "Should be two codecs installed.")
+	assert.Equal(t, len(InstalledCodecs), 4, "Should be 4 codecs installed.")
 }
 
 func TestGetCodec(t *testing.T) {

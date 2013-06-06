@@ -4,9 +4,11 @@ import (
 	"errors"
 	"fmt"
 	"github.com/stretchrcom/codecs"
+	"github.com/stretchrcom/codecs/bson"
 	"github.com/stretchrcom/codecs/constants"
 	"github.com/stretchrcom/codecs/json"
 	"github.com/stretchrcom/codecs/jsonp"
+	"github.com/stretchrcom/codecs/msgpack"
 	"strings"
 )
 
@@ -14,7 +16,7 @@ import (
 var ErrorContentTypeNotSupported = errors.New("Content type is not supported.")
 
 // InstalledCodecs is an array of installed codec objects, initialized with the provided default codecs.
-var InstalledCodecs []codecs.Codec = []codecs.Codec{new(json.JsonCodec), new(jsonp.JsonPCodec)}
+var InstalledCodecs []codecs.Codec = []codecs.Codec{new(json.JsonCodec), new(jsonp.JsonPCodec), new(msgpack.MsgpackCodec), new(bson.BsonCodec)}
 
 // WebCodecService represents the default implementation for providing access to the
 // currently installed web codecs.
