@@ -6,7 +6,6 @@ import (
 	"github.com/stretchr/stew/objects"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/mock"
-	"log"
 	"reflect"
 	"testing"
 )
@@ -30,6 +29,21 @@ func TestPublicData(t *testing.T) {
 
 }
 
+func TestPublicDataMap(t *testing.T) {
+
+	o := new(test.TestObjectWithFacade)
+	o.Mock.On("PublicData", map[string]interface{}{}).Return(objects.Map{"theName": "Mat"}, nil)
+
+	public, err := PublicDataMap(o, map[string]interface{}{})
+
+	if assert.Nil(t, err) {
+		assert.Equal(t, public["theName"], "Mat")
+	}
+
+	mock.AssertExpectationsForObjects(t, o.Mock)
+
+}
+
 func TestPublicData_WithArray(t *testing.T) {
 
 	o := new(test.TestObjectWithFacade)
@@ -43,8 +57,6 @@ func TestPublicData_WithArray(t *testing.T) {
 	o2.Mock.On("PublicData", map[string]interface{}{}).Return(objects.Map{"theName": "3"}, nil)
 
 	public, err := PublicData(arr, map[string]interface{}{})
-
-	log.Printf("public: %s", public)
 
 	if assert.Nil(t, err) {
 		assert.Equal(t, reflect.Slice, reflect.TypeOf(public).Kind(), "Result should be array not %v", reflect.TypeOf(public))

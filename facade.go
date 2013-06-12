@@ -2,6 +2,7 @@ package codecs
 
 import (
 	"errors"
+	"github.com/stretchr/stew/objects"
 	"reflect"
 )
 
@@ -63,6 +64,13 @@ type Facade interface {
 // If any of the objects' PublicData() method returns an error, that is directly returned.
 func PublicData(object interface{}, options map[string]interface{}) (interface{}, error) {
 	return publicData(object, 0, options)
+}
+
+// PublicDataMap calls PublicData and returns the result after type asserting to objects.Map
+func PublicDataMap(object interface{}, options map[string]interface{}) (objects.Map, error) {
+	data, err := publicData(object, 0, options)
+	mapData := data.(objects.Map)
+	return mapData, err
 }
 
 // publicData performs the work of PublicData keeping track of the level in order
