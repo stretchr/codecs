@@ -69,6 +69,9 @@ func PublicData(object interface{}, options map[string]interface{}) (interface{}
 // PublicDataMap calls PublicData and returns the result after type asserting to objects.Map
 func PublicDataMap(object interface{}, options map[string]interface{}) (objects.Map, error) {
 	data, err := publicData(object, 0, options)
+	if data == nil {
+		return nil, nil
+	}
 	mapData := data.(objects.Map)
 	return mapData, err
 }

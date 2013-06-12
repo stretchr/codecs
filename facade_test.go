@@ -44,6 +44,21 @@ func TestPublicDataMap(t *testing.T) {
 
 }
 
+func TestPublicDataMap_ReturningNil(t *testing.T) {
+
+	o := new(test.TestObjectWithFacade)
+	o.Mock.On("PublicData", map[string]interface{}{}).Return(nil, nil)
+
+	public, err := PublicDataMap(o, map[string]interface{}{})
+
+	if assert.Nil(t, err) {
+		assert.Nil(t, public)
+	}
+
+	mock.AssertExpectationsForObjects(t, o.Mock)
+
+}
+
 func TestPublicData_WithArray(t *testing.T) {
 
 	o := new(test.TestObjectWithFacade)
