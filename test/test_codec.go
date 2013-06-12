@@ -1,7 +1,7 @@
 package test
 
 import (
-	"github.com/stretchrcom/testify/mock"
+	"github.com/stretchr/testify/mock"
 )
 
 // TestCodec is a codec mock object useful for testing code

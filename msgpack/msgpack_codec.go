@@ -1,7 +1,7 @@
 package msgpack
 
 import (
-	"github.com/stretchrcom/codecs/constants"
+	"github.com/stretchr/codecs/constants"
 	"github.com/ugorji/go-msgpack"
 )
 

@@ -2,7 +2,7 @@ package json
 
 import (
 	jsonEncoding "encoding/json"
-	"github.com/stretchrcom/codecs/constants"
+	"github.com/stretchr/codecs/constants"
 )
 
 // JsonCodec converts objects to and from JSON.

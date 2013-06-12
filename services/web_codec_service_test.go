@@ -2,12 +2,12 @@ package services
 
 import (
 	"fmt"
-	"github.com/stretchrcom/codecs"
-	"github.com/stretchrcom/codecs/constants"
-	"github.com/stretchrcom/codecs/test"
-	"github.com/stretchrcom/stew/objects"
-	"github.com/stretchrcom/testify/assert"
-	"github.com/stretchrcom/testify/mock"
+	"github.com/stretchr/codecs"
+	"github.com/stretchr/codecs/constants"
+	"github.com/stretchr/codecs/test"
+	"github.com/stretchr/stew/objects"
+	"github.com/stretchr/testify/assert"
+	"github.com/stretchr/testify/mock"
 	"strings"
 	"testing"
 )

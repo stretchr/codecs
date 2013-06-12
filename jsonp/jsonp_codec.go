@@ -3,8 +3,8 @@ package jsonp
 import (
 	jsonEncoding "encoding/json"
 	"errors"
-	"github.com/stretchrcom/codecs/constants"
-	stewstrings "github.com/stretchrcom/stew/strings"
+	"github.com/stretchr/codecs/constants"
+	stewstrings "github.com/stretchr/stew/strings"
 )
 
 // ErrorMissingCallback is the error for when a callback option is expected but missing.

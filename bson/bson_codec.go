@@ -1,7 +1,7 @@
 package bson
 
 import (
-	"github.com/stretchrcom/codecs/constants"
+	"github.com/stretchr/codecs/constants"
 	"labix.org/v2/mgo/bson"
 )
 

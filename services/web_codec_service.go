@@ -3,12 +3,12 @@ package services
 import (
 	"errors"
 	"fmt"
-	"github.com/stretchrcom/codecs"
-	"github.com/stretchrcom/codecs/bson"
-	"github.com/stretchrcom/codecs/constants"
-	"github.com/stretchrcom/codecs/json"
-	"github.com/stretchrcom/codecs/jsonp"
-	"github.com/stretchrcom/codecs/msgpack"
+	"github.com/stretchr/codecs"
+	"github.com/stretchr/codecs/bson"
+	"github.com/stretchr/codecs/constants"
+	"github.com/stretchr/codecs/json"
+	"github.com/stretchr/codecs/jsonp"
+	"github.com/stretchr/codecs/msgpack"
 	"strings"
 )
 

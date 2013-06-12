@@ -1,9 +1,9 @@
 package bson
 
 import (
-	"github.com/stretchrcom/codecs"
-	"github.com/stretchrcom/codecs/constants"
-	"github.com/stretchrcom/testify/assert"
+	"github.com/stretchr/codecs"
+	"github.com/stretchr/codecs/constants"
+	"github.com/stretchr/testify/assert"
 	"testing"
 )
 
