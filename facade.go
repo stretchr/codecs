@@ -2,8 +2,6 @@ package codecs
 
 import (
 	"errors"
-	"fmt"
-	"github.com/stretchr/stew/objects"
 	"reflect"
 )
 
@@ -52,6 +50,10 @@ type Facade interface {
 // until the returning object no longer implements the Facade interface at which point
 // it is considered to have returned the public data.
 //
+// If the object passed in is an array or slice, PublicData is called on each object
+// to build up an array of public versions of the objects, and an array will be
+// returned.
+//
 // If the resulting object is not of the appropriate type, the PublicDataDidNotFindMap error will
 // be returned.
 //
@@ -59,13 +61,13 @@ type Facade interface {
 // thus resulting in too much recursion, the PublicDataTooMuchRecursion error is returned.
 //
 // If any of the objects' PublicData() method returns an error, that is directly returned.
-func PublicData(object interface{}, options map[string]interface{}) (objects.Map, error) {
+func PublicData(object interface{}, options map[string]interface{}) (interface{}, error) {
 	return publicData(object, 0, options)
 }
 
 // publicData performs the work of PublicData keeping track of the level in order
 // to ensure the code doesn't recurse too much.
-func publicData(object interface{}, level int, options map[string]interface{}) (objects.Map, error) {
+func publicData(object interface{}, level int, options map[string]interface{}) (interface{}, error) {
 
 	// make sure we don't end up with too much recusrion
 	if level > facadeMaxRecursionLevel {
@@ -75,6 +77,39 @@ func publicData(object interface{}, level int, options map[string]interface{}) (
 	// if object is nil, that's OK - we'll just return nil
 	if object == nil {
 		return nil, nil
+	}
+
+	// handle arrays and slices - https://github.com/stretchr/goweb/issues/27
+	objectValue := reflect.ValueOf(object)
+	objectKind := objectValue.Kind()
+	if objectKind == reflect.Array || objectKind == reflect.Slice {
+
+		// make an array to hold the items
+		length := objectValue.Len()
+		arr := make([]interface{}, length)
+
+		// get the public data for each item
+		for subObjIndex := 0; subObjIndex < length; subObjIndex++ {
+
+			// get this object
+			subObj := objectValue.Index(subObjIndex).Interface()
+
+			// ask for the object's public data
+			subPublic, subPublicErr := publicData(subObj, level+1, options)
+
+			// throw an error if there is one
+			if subPublicErr != nil {
+				return nil, subPublicErr
+			}
+
+			// add the item to the array
+			arr[subObjIndex] = subPublic
+
+		}
+
+		// return the object
+		return arr, nil
+
 	}
 
 	// cast the object
@@ -92,16 +127,6 @@ func publicData(object interface{}, level int, options map[string]interface{}) (
 		return publicData(publicObject, level+1, options)
 	}
 
-	// if the object isn't map[string]interface{}, then we need
-	// to throw an error - because PublicData was unable to find an appropriate
-	// object.
-
-	if castObject, isMSI := object.(map[string]interface{}); isMSI {
-		return castObject, nil
-	}
-	if castObject, isMap := object.(objects.Map); isMap {
-		return castObject, nil
-	}
-
-	panic(fmt.Sprintf("codecs: Cannot call PublicData(%s) because it does not implement codecs.Facade (i.e. needs PublicData method) and is not a Data object.", reflect.TypeOf(object)))
+	// we can't do anything - so just return the object back
+	return object, nil
 }

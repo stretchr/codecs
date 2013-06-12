@@ -6,6 +6,8 @@ import (
 	"github.com/stretchr/stew/objects"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/mock"
+	"log"
+	"reflect"
 	"testing"
 )
 
@@ -21,10 +23,41 @@ func TestPublicData(t *testing.T) {
 	public, err := PublicData(o, map[string]interface{}{})
 
 	if assert.Nil(t, err) {
-		assert.Equal(t, public["theName"], "Mat")
+		assert.Equal(t, public.(objects.Map)["theName"], "Mat")
 	}
 
 	mock.AssertExpectationsForObjects(t, o.Mock)
+
+}
+
+func TestPublicData_WithArray(t *testing.T) {
+
+	o := new(test.TestObjectWithFacade)
+	o1 := new(test.TestObjectWithFacade)
+	o2 := new(test.TestObjectWithFacade)
+
+	arr := []interface{}{o, o1, o2}
+
+	o.Mock.On("PublicData", map[string]interface{}{}).Return(objects.Map{"theName": "1"}, nil)
+	o1.Mock.On("PublicData", map[string]interface{}{}).Return(objects.Map{"theName": "2"}, nil)
+	o2.Mock.On("PublicData", map[string]interface{}{}).Return(objects.Map{"theName": "3"}, nil)
+
+	public, err := PublicData(arr, map[string]interface{}{})
+
+	log.Printf("public: %s", public)
+
+	if assert.Nil(t, err) {
+		assert.Equal(t, reflect.Slice, reflect.TypeOf(public).Kind(), "Result should be array not %v", reflect.TypeOf(public))
+	}
+
+	mock.AssertExpectationsForObjects(t, o.Mock, o1.Mock, o2.Mock)
+
+	publicArray := public.([]interface{})
+	if assert.Equal(t, 3, len(publicArray)) {
+		assert.Equal(t, publicArray[0].(objects.Map)["theName"], "1", "o")
+		assert.Equal(t, publicArray[1].(objects.Map)["theName"], "2", "o1")
+		assert.Equal(t, publicArray[2].(objects.Map)["theName"], "3", "o2")
+	}
 
 }
 
@@ -68,7 +101,7 @@ func TestPublicData_WithRecursion(t *testing.T) {
 	public, err := PublicData(o, map[string]interface{}{})
 
 	if assert.Nil(t, err) {
-		assert.Equal(t, public["theName"], "Mat")
+		assert.Equal(t, public.(objects.Map)["theName"], "Mat")
 	}
 
 	mock.AssertExpectationsForObjects(t, o.Mock, o1.Mock, o2.Mock)
@@ -90,7 +123,7 @@ func TestPublicData_WithRecursion_WithObjects(t *testing.T) {
 	public, err := PublicData(o, args)
 
 	if assert.Nil(t, err) {
-		assert.Equal(t, public["theName"], "Mat")
+		assert.Equal(t, public.(objects.Map)["theName"], "Mat")
 	}
 
 	mock.AssertExpectationsForObjects(t, o.Mock, o1.Mock, o2.Mock)
