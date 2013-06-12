@@ -12,7 +12,7 @@ You can get stuck into the API documentation by checking out these API docs:
 ## How to use the codecs package
 
 	// make a codec service
-    codecService := new(WebCodecService)
+    codecService := new(codecs.WebCodecService)
 
     // get the content type (probably from the request)
 	var contentType string = "application/json"
@@ -33,13 +33,26 @@ You can get stuck into the API documentation by checking out these API docs:
 
     // use the codec to unmarshal the dataBytes
     var obj interface{}
-    unmarshalErr := codec.Unmarshal(dataBytes, obj) error
+    unmarshalErr := codecService.UnmarshalWithCodec(codec, dataBytes, obj) error
 
     if unmarshalErr != nil {
     	// handle this error
     }
 
     // obj will now be an object built from the dataBytes
+
+    // get some details about the kind of response we're going to make
+    // (probably from the request headers again)
+    var accept string = "application/json"
+    var extension string = ".json"
+    var hasCallback bool = false
+
+    // get the codec to respond with (it could be different)
+    responseCodec, responseCodecErr := codecService.GetCodecForResponding(accept, extension, hasCallback)
+
+    if responseCodecErr != nil {
+        // handle this error
+    }
 
     /*
     	object to []bytes
@@ -48,16 +61,14 @@ You can get stuck into the API documentation by checking out these API docs:
     // get the data object
     dataObject := map[string]interface{}{"name": "Mat"}
 
-    bytes, marshalErr := codec.Marshal(dataObject, nil)
+    // use the codec service to marshal to bytes
+    bytes, marshalErr := codecService.MarshalWithCodec(responseCodecErr, dataObject, nil)
 
     if marshalErr != nil {
     	// handle marshalErr
     }
 
     // bytes would now be a representation of the data object
-
-
-
 
 ------
 
