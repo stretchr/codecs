@@ -4,16 +4,24 @@ import (
 	"errors"
 	"fmt"
 	"github.com/stretchr/codecs/constants"
+	"github.com/stretchr/stew/objects"
+	"reflect"
 	"strings"
 )
 
+const (
+	OptionIncludeTypeAttributes string = "types"
+)
+
 var (
-	Indentation              string = "  "
-	XMLDeclaration           string = "<?xml version=\"1.0\"?>"
-	XMLElementFormat         string = "<%s>%s</%s>"
-	XMLElementFormatIndented string = "<%s>\n%s%s\n</%s>"
-	XMLObjectElementName     string = "object"
-	XMLObjectsElementName    string = "objects"
+	Indentation                               string = "  "
+	XMLDeclaration                            string = "<?xml version=\"1.0\"?>"
+	XMLElementFormat                          string = "<%s>%s</%s>"
+	XMLElementFormatIndented                  string = "<%s>\n%s%s\n</%s>"
+	XMLElementWithTypeAttributeFormat         string = "<%s type=\"%s\">%s</%s>"
+	XMLElementWithTypeAttributeFormatIndented string = "<%s type=\"%s\">\n%s%s\n</%s>"
+	XMLObjectElementName                      string = "object"
+	XMLObjectsElementName                     string = "objects"
 )
 
 type XmlCodec struct{}
@@ -56,7 +64,7 @@ func (c *XmlCodec) CanMarshalWithCallback() bool {
   Custom XML marshalling
 */
 
-func marshal(object interface{}, doIndent bool, indentLevel int) ([]byte, error) {
+func marshal(object interface{}, doIndent bool, indentLevel int, options objects.Map) ([]byte, error) {
 
 	var nextIndent int = indentLevel + 1
 	var output []string
@@ -64,9 +72,10 @@ func marshal(object interface{}, doIndent bool, indentLevel int) ([]byte, error)
 	switch object.(type) {
 	case map[string]interface{}:
 
+		var objects []string
 		for k, v := range object.(map[string]interface{}) {
 
-			valueBytes, valueMarshalErr := marshal(v, doIndent, nextIndent)
+			valueBytes, valueMarshalErr := marshal(v, doIndent, nextIndent, options)
 
 			// handle errors
 			if valueMarshalErr != nil {
@@ -74,46 +83,62 @@ func marshal(object interface{}, doIndent bool, indentLevel int) ([]byte, error)
 			}
 
 			// add the key and value
-			el := element(k, string(valueBytes), doIndent, nextIndent)
-			output = appends(output, element(XMLObjectElementName, el, doIndent, nextIndent), doIndent, nextIndent)
+			el := element(k, v, string(valueBytes), doIndent, nextIndent, options)
+			objects = append(objects, el)
 
 		}
+
+		output = append(output, element(XMLObjectElementName, nil, strings.Join(objects, ""), doIndent, nextIndent, nil))
 
 	case []map[string]interface{}:
 
 		var objects []string
 		for _, v := range object.([]map[string]interface{}) {
 
-			valueBytes, err := marshal(v, doIndent, nextIndent)
+			valueBytes, err := marshal(v, doIndent, nextIndent, options)
 
 			if err != nil {
 				return nil, err
 			}
 
-			objects = appends(objects, string(valueBytes), doIndent, nextIndent)
+			objects = append(objects, string(valueBytes))
 
 		}
 
 		el := strings.Join(objects, "")
-		output = appends(output, element(XMLObjectsElementName, el, doIndent, nextIndent), doIndent, nextIndent)
+		output = append(output, element(XMLObjectsElementName, nil, el, doIndent, nextIndent, nil))
 
 	default:
 		// return the value
-		output = appends(output, fmt.Sprintf("%v", object), doIndent, nextIndent)
+		output = append(output, fmt.Sprintf("%v", object))
 	}
 
 	return []byte(strings.Join(output, "")), nil
 
 }
 
-func appends(a []string, s string, doIndent bool, indentLevel int) []string {
-	return append(a, s)
-}
+func element(k string, v interface{}, vString string, doIndent bool, indentLevel int, options objects.Map) string {
 
-func element(k, v string, doIndent bool, indentLevel int) string {
+	var typeString string
+	if v != nil && options.Has(OptionIncludeTypeAttributes) {
+		typeString = reflect.TypeOf(v).Name()
+	}
+
 	if doIndent {
 		indent := strings.Repeat(Indentation, indentLevel)
-		return fmt.Sprintf(XMLElementFormatIndented, k, indent, v, k)
+
+		if options.Has(OptionIncludeTypeAttributes) {
+			return fmt.Sprintf(XMLElementWithTypeAttributeFormatIndented, k, typeString, indent, vString, k)
+		} else {
+			return fmt.Sprintf(XMLElementFormatIndented, k, indent, vString, k)
+		}
+
 	}
-	return fmt.Sprintf(XMLElementFormat, k, v, k)
+
+	if options.Has(OptionIncludeTypeAttributes) {
+		return fmt.Sprintf(XMLElementWithTypeAttributeFormat, k, typeString, vString, k)
+	} else {
+		return fmt.Sprintf(XMLElementFormat, k, vString, k)
+	}
+
 }
