@@ -1,6 +1,7 @@
 package xml
 
 import (
+	"errors"
 	"fmt"
 	"github.com/stretchr/codecs/constants"
 	"strings"
@@ -32,7 +33,7 @@ func (c *XmlCodec) Marshal(object interface{}, options map[string]interface{}) (
 
 // Unmarshal converts a []byte representation into an object.
 func (c *XmlCodec) Unmarshal(data []byte, obj interface{}) error {
-	return nil
+	return errors.New("codecs: xml: Unmarshalling XML is not supported.")
 }
 
 // ContentType gets the content type that this codec handles.
