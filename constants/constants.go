@@ -13,6 +13,8 @@ const (
 	FileExtensionBSON    string = ".bson"
 	ContentTypeMsgpack   string = "application/x-msgpack"
 	FileExtensionMsgpack string = ".msgpack"
+	ContentTypeXML       string = "text/xml"
+	FileExtensionXML     string = ".xml"
 )
 
 const (
