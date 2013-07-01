@@ -2,6 +2,7 @@ package codecs
 
 import (
 	"errors"
+	"fmt"
 	"github.com/stretchr/stew/objects"
 	"reflect"
 )
@@ -68,12 +69,34 @@ func PublicData(object interface{}, options map[string]interface{}) (interface{}
 
 // PublicDataMap calls PublicData and returns the result after type asserting to objects.Map
 func PublicDataMap(object interface{}, options map[string]interface{}) (objects.Map, error) {
+
 	data, err := publicData(object, 0, options)
+
+	if err != nil {
+		return nil, err
+	}
+
 	if data == nil {
 		return nil, nil
 	}
+
+	switch data.(type) {
+	case map[string]interface{}:
+		return objects.Map(data.(map[string]interface{})), nil
+	case objects.Map:
+		return data.(objects.Map), nil
+	default:
+		if dataMap, ok := data.(objects.Map); ok {
+			return dataMap, nil
+		} else {
+			panic(fmt.Sprintf("codecs: PublicDataMap must refer to a map[string]interface{} or objects.Map, not %s.", reflect.TypeOf(data)))
+		}
+	}
+
+	// assume we have an objects.Map
 	mapData := data.(objects.Map)
-	return mapData, err
+
+	return mapData, nil
 }
 
 // publicData performs the work of PublicData keeping track of the level in order

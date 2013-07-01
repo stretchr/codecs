@@ -44,6 +44,21 @@ func TestPublicDataMap(t *testing.T) {
 
 }
 
+func TestPublicDataMap_WithMSI(t *testing.T) {
+
+	o := new(test.TestObjectWithFacade)
+	o.Mock.On("PublicData", map[string]interface{}{}).Return(map[string]interface{}{"theName": "Mat"}, nil)
+
+	public, err := PublicDataMap(o, map[string]interface{}{})
+
+	if assert.Nil(t, err) {
+		assert.Equal(t, public["theName"], "Mat")
+	}
+
+	mock.AssertExpectationsForObjects(t, o.Mock)
+
+}
+
 func TestPublicDataMap_ReturningNil(t *testing.T) {
 
 	o := new(test.TestObjectWithFacade)
