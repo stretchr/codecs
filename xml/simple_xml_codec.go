@@ -24,11 +24,11 @@ var (
 	XMLObjectsElementName                     string = "objects"
 )
 
-type XmlCodec struct{}
+type SimpleXmlCodec struct{}
 
 // Marshal converts an object to a []byte representation.
 // You can optionally pass additional arguments to further customize this call.
-func (c *XmlCodec) Marshal(object interface{}, options map[string]interface{}) ([]byte, error) {
+func (c *SimpleXmlCodec) Marshal(object interface{}, options map[string]interface{}) ([]byte, error) {
 
 	var output []string
 
@@ -40,23 +40,23 @@ func (c *XmlCodec) Marshal(object interface{}, options map[string]interface{}) (
 }
 
 // Unmarshal converts a []byte representation into an object.
-func (c *XmlCodec) Unmarshal(data []byte, obj interface{}) error {
+func (c *SimpleXmlCodec) Unmarshal(data []byte, obj interface{}) error {
 	return errors.New("codecs: xml: Unmarshalling XML is not supported.")
 }
 
 // ContentType gets the content type that this codec handles.
-func (c *XmlCodec) ContentType() string {
+func (c *SimpleXmlCodec) ContentType() string {
 	return constants.ContentTypeXML
 }
 
 // FileExtension returns the file extension by which this codec is represented.
-func (c *XmlCodec) FileExtension() string {
+func (c *SimpleXmlCodec) FileExtension() string {
 	return constants.FileExtensionXML
 }
 
 // CanMarshalWithCallback indicates whether this codec is capable of marshalling a response with
 // a callback parameter.
-func (c *XmlCodec) CanMarshalWithCallback() bool {
+func (c *SimpleXmlCodec) CanMarshalWithCallback() bool {
 	return false
 }
 
