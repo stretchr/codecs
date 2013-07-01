@@ -15,12 +15,29 @@ import (
 // ErrorContentTypeNotSupported is the error for when a content type is requested that is not supported by the system
 var ErrorContentTypeNotSupported = errors.New("Content type is not supported.")
 
-// InstalledCodecs is an array of installed codec objects, initialized with the provided default codecs.
-var InstalledCodecs []codecs.Codec = []codecs.Codec{new(json.JsonCodec), new(jsonp.JsonPCodec), new(msgpack.MsgpackCodec), new(bson.BsonCodec)}
-
 // WebCodecService represents the default implementation for providing access to the
 // currently installed web codecs.
-type WebCodecService struct{}
+type WebCodecService struct {
+	codecs []codecs.Codec
+}
+
+// NewWebCodecService makes a new WebCodecService with the default codecs
+// added.
+func NewWebCodecService() *WebCodecService {
+	s := new(WebCodecService)
+	s.codecs = []codecs.Codec{new(json.JsonCodec), new(jsonp.JsonPCodec), new(msgpack.MsgpackCodec), new(bson.BsonCodec)}
+	return s
+}
+
+// Codecs gets all currently installed codecs.
+func (s *WebCodecService) Codecs() []codecs.Codec {
+	return s.codecs
+}
+
+// AddCodec adds the specified codec to the installed codecs list.
+func (s *WebCodecService) AddCodec(codec codecs.Codec) {
+	s.codecs = append(s.codecs, codec)
+}
 
 // GetCodecForResponding gets the codec to use to respond based on the
 // given accept string, the extension provided and whether it has a callback
@@ -32,14 +49,14 @@ func (s *WebCodecService) GetCodecForResponding(accept, extension string, hasCal
 
 	// is there a callback?  If so, look for JSONP
 	if hasCallback {
-		for _, codec := range InstalledCodecs {
+		for _, codec := range s.codecs {
 			if codec.ContentType() == constants.ContentTypeJSONP {
 				return codec, nil
 			}
 		}
 	}
 
-	for _, codec := range InstalledCodecs {
+	for _, codec := range s.codecs {
 		if strings.Contains(strings.ToLower(accept), strings.ToLower(codec.ContentType())) {
 			return codec, nil
 		} else if strings.ToLower(codec.FileExtension()) == strings.ToLower(extension) {
@@ -50,14 +67,14 @@ func (s *WebCodecService) GetCodecForResponding(accept, extension string, hasCal
 	}
 
 	// return the first installed codec by default
-	return InstalledCodecs[0], nil
+	return s.codecs[0], nil
 }
 
 // GetCodec gets the codec to use to interpret the request based on the
 // content type.
 func (s *WebCodecService) GetCodec(contentType string) (codecs.Codec, error) {
 
-	for _, codec := range InstalledCodecs {
+	for _, codec := range s.codecs {
 
 		// default codec
 		if len(contentType) == 0 && codec.ContentType() == constants.ContentTypeJSON {
