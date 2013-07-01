@@ -6,6 +6,8 @@ import (
 
 // CodecService is the interface for a service responsible for providing Codecs.
 type CodecService interface {
+	codecs.Facade
+
 	// GetCodecForResponding gets the codec to use to respond based on the
 	// given accept string, the extension provided and whether it has a callback
 	// or not.

@@ -9,6 +9,7 @@ import (
 	"github.com/stretchr/stew/objects"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/mock"
+	"reflect"
 	"strings"
 	"testing"
 )
@@ -298,5 +299,26 @@ func TestUnmarshalWithCodec_WithError(t *testing.T) {
 
 	assert.Equal(t, assert.AnError, err)
 	mock.AssertExpectationsForObjects(t, testCodec.Mock)
+
+}
+
+func TestPublicData(t *testing.T) {
+
+	s := NewWebCodecService()
+	d, _ := codecs.PublicData(s, nil)
+	list := d.([]interface{})
+
+	if assert.Equal(t, len(s.codecs), len(list)) {
+
+		// pick one to test
+		codec := s.codecs[0]
+		publicCodec := list[0].(objects.Map)
+
+		assert.Equal(t, reflect.TypeOf(codec).Elem().Name(), publicCodec["name"])
+		assert.Equal(t, codec.ContentType(), publicCodec["contentType"])
+		assert.Equal(t, codec.FileExtension(), publicCodec["fileExtension"])
+		assert.Equal(t, codec.CanMarshalWithCallback(), publicCodec["canMarshalWithCallback"])
+
+	}
 
 }
