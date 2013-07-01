@@ -9,8 +9,6 @@ import (
 	"github.com/stretchr/codecs/json"
 	"github.com/stretchr/codecs/jsonp"
 	"github.com/stretchr/codecs/msgpack"
-	"github.com/stretchr/stew/objects"
-	"reflect"
 	"strings"
 )
 
