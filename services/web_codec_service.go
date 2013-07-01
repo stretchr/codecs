@@ -115,19 +115,3 @@ func (s *WebCodecService) MarshalWithCodec(codec codecs.Codec, object interface{
 func (s *WebCodecService) UnmarshalWithCodec(codec codecs.Codec, data []byte, object interface{}) error {
 	return codec.Unmarshal(data, object)
 }
-
-// PublicData gets an array describing the installed codecs.
-func (s *WebCodecService) PublicData(options map[string]interface{}) (interface{}, error) {
-
-	publicData := make([]objects.Map, len(s.codecs))
-
-	for codecIndex, codec := range s.codecs {
-		publicData[codecIndex] = objects.NewMap("name", reflect.TypeOf(codec).Elem().Name(),
-			"contentType", codec.ContentType(),
-			"fileExtension", codec.FileExtension(),
-			"canMarshalWithCallback", codec.CanMarshalWithCallback())
-	}
-
-	return publicData, nil
-
-}
