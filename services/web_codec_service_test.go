@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"github.com/stretchr/codecs"
 	"github.com/stretchr/codecs/constants"
+	"github.com/stretchr/codecs/json"
 	"github.com/stretchr/codecs/test"
 	"github.com/stretchr/stew/objects"
 	"github.com/stretchr/testify/assert"
@@ -17,17 +18,32 @@ import (
 */
 
 func TestInterface(t *testing.T) {
-	assert.Implements(t, (*CodecService)(nil), new(WebCodecService), "WebCodecService")
+	assert.Implements(t, (*CodecService)(nil), NewWebCodecService(), "WebCodecService")
 }
 
-func TestInstalledCodecs(t *testing.T) {
-	assert.NotNil(t, InstalledCodecs, "InstalledCodecs")
-	assert.Equal(t, len(InstalledCodecs), 4, "Should be 4 codecs installed.")
+func TestNewWebCodecService(t *testing.T) {
+	n := NewWebCodecService()
+	assert.Equal(t, 4, len(n.codecs))
+}
+
+func TestAddCodec(t *testing.T) {
+
+	service := NewWebCodecService()
+
+	service.codecs = make([]codecs.Codec, 0)
+	jsonCodec := new(json.JsonCodec)
+
+	service.AddCodec(jsonCodec)
+
+	if assert.Equal(t, 1, len(service.Codecs())) {
+		assert.Equal(t, jsonCodec, service.codecs[0])
+	}
+
 }
 
 func TestGetCodec(t *testing.T) {
 
-	service := new(WebCodecService)
+	service := NewWebCodecService()
 	var codec codecs.Codec
 
 	codec, _ = service.GetCodec(constants.ContentTypeJSON)
@@ -60,7 +76,7 @@ func TestGetCodec(t *testing.T) {
 
 func TestGetCodecForResponding_DefaultCodec(t *testing.T) {
 
-	service := new(WebCodecService)
+	service := NewWebCodecService()
 	var codec codecs.Codec
 
 	codec, _ = service.GetCodecForResponding("", "", false)
@@ -73,7 +89,7 @@ func TestGetCodecForResponding_DefaultCodec(t *testing.T) {
 
 func TestGetCodecForResponding(t *testing.T) {
 
-	service := new(WebCodecService)
+	service := NewWebCodecService()
 	var codec codecs.Codec
 
 	// JSON - accept header
@@ -137,7 +153,7 @@ func TestGetCodecForResponding(t *testing.T) {
 func TestMarshalWithCodec(t *testing.T) {
 
 	testCodec := new(test.TestCodec)
-	service := new(WebCodecService)
+	service := NewWebCodecService()
 
 	// make some test stuff
 	var bytesToReturn []byte = []byte("Hello World")
@@ -166,7 +182,7 @@ func TestMarshalWithCodec_WithFacade(t *testing.T) {
 	// func (s *WebCodecService) MarshalWithCodec(codec codecs.Codec, object interface{}, options ...interface{}) ([]byte, error) {
 
 	testCodec := new(test.TestCodec)
-	service := new(WebCodecService)
+	service := NewWebCodecService()
 
 	// make some test stuff
 	var bytesToReturn []byte = []byte("Hello World")
@@ -197,7 +213,7 @@ func TestMarshalWithCodec_WithFacade_AndError(t *testing.T) {
 	// func (s *WebCodecService) MarshalWithCodec(codec codecs.Codec, object interface{}, options ...interface{}) ([]byte, error) {
 
 	testCodec := new(test.TestCodec)
-	service := new(WebCodecService)
+	service := NewWebCodecService()
 
 	// make some test stuff
 	testObjectWithFacade := new(test.TestObjectWithFacade)
@@ -220,7 +236,7 @@ func TestMarshalWithCodec_WithError(t *testing.T) {
 	// func (s *WebCodecService) MarshalWithCodec(codec codecs.Codec, object interface{}, options ...interface{}) ([]byte, error) {
 
 	testCodec := new(test.TestCodec)
-	service := new(WebCodecService)
+	service := NewWebCodecService()
 
 	// make some test stuff
 	object := objects.Map{"Name": "Mat"}
@@ -246,7 +262,7 @@ func TestUnmarshalWithCodec(t *testing.T) {
 	// func (s *WebCodecService) UnmarshalWithCodec(codec codecs.Codec, data []byte, object interface{}) error {
 
 	testCodec := new(test.TestCodec)
-	service := new(WebCodecService)
+	service := NewWebCodecService()
 
 	// some test objects
 	object := struct{}{}
@@ -268,7 +284,7 @@ func TestUnmarshalWithCodec_WithError(t *testing.T) {
 	// func (s *WebCodecService) UnmarshalWithCodec(codec codecs.Codec, data []byte, object interface{}) error {
 
 	testCodec := new(test.TestCodec)
-	service := new(WebCodecService)
+	service := NewWebCodecService()
 
 	// some test objects
 	object := struct{}{}

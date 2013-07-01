@@ -6,6 +6,13 @@
 // To write a new codec service, simply confrom to the CodecService interface, and install it by
 // doing:
 //
+//    // get a service
+//    codecService := NewWebCodecService()
+//
+//    // make your own codec
 //    myCodec := new(MyCodec)
-//    services.InstalledCodecs = append(services.InstalledCodecs, myCodec)
+//
+//    // install the codec
+//    codecService.AddCodec(myCodec)
+//
 package services

@@ -22,4 +22,10 @@ type CodecService interface {
 
 	// UnmarshalWithCodec unmarshals the specified data into the object with the specified codec.
 	UnmarshalWithCodec(codec codecs.Codec, data []byte, object interface{}) error
+
+	// Codecs gets all currently installed codecs.
+	Codecs() []codecs.Codec
+
+	// AddCodec adds the specified codec to the installed codecs list.
+	AddCodec(codecs.Codec)
 }
