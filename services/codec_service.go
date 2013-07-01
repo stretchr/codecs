@@ -6,15 +6,6 @@ import (
 
 // CodecService is the interface for a service responsible for providing Codecs.
 type CodecService interface {
-	// Setup is called when the services are first created in order to
-	// perform any initialisation work to prepare the service for use.
-	Setup() error
-
-	// TearDown is called when the services have come to the end of their
-	// life.  They should use this method to release any resources or close
-	// any connections before the service shuts down.
-	TearDown()
-
 	// GetCodecForResponding gets the codec to use to respond based on the
 	// given accept string, the extension provided and whether it has a callback
 	// or not.
