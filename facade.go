@@ -43,7 +43,7 @@ type Facade interface {
 	// object, as it is possible that the response from PublicData will be modified
 	// before being used, and it is bad practice for these methods to alter the
 	// original data object.
-	PublicData(map[string]interface{}) (interface{}, error)
+	PublicData(options map[string]interface{}) (publicData interface{}, err error)
 }
 
 // PublicData gets the data that is considered public for the specified object.
