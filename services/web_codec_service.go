@@ -39,6 +39,12 @@ func (s *WebCodecService) AddCodec(codec codecs.Codec) {
 	s.codecs = append(s.codecs, codec)
 }
 
+func (s *WebCodecService) assertCodecs() {
+	if len(s.codecs) == 0 {
+		panic("codecs: No codecs are installed - use AddCodec to add some or use NewWebCodecService for default codecs.")
+	}
+}
+
 // GetCodecForResponding gets the codec to use to respond based on the
 // given accept string, the extension provided and whether it has a callback
 // or not.
@@ -46,6 +52,9 @@ func (s *WebCodecService) AddCodec(codec codecs.Codec) {
 // As of now, if hasCallback is true, the JSONP codec will be returned.
 // This may be changed if additional callback capable codecs are added.
 func (s *WebCodecService) GetCodecForResponding(accept, extension string, hasCallback bool) (codecs.Codec, error) {
+
+	// make sure we have at least one codec
+	s.assertCodecs()
 
 	// is there a callback?  If so, look for JSONP
 	if hasCallback {
@@ -74,6 +83,9 @@ func (s *WebCodecService) GetCodecForResponding(accept, extension string, hasCal
 // content type.
 func (s *WebCodecService) GetCodec(contentType string) (codecs.Codec, error) {
 
+	// make sure we have at least one codec
+	s.assertCodecs()
+
 	for _, codec := range s.codecs {
 
 		// default codec
@@ -97,6 +109,9 @@ func (s *WebCodecService) GetCodec(contentType string) (codecs.Codec, error) {
 // marshalled instead.
 func (s *WebCodecService) MarshalWithCodec(codec codecs.Codec, object interface{}, options map[string]interface{}) ([]byte, error) {
 
+	// make sure we have at least one codec
+	s.assertCodecs()
+
 	// get the public data
 	publicData, err := codecs.PublicData(object, options)
 
@@ -111,5 +126,9 @@ func (s *WebCodecService) MarshalWithCodec(codec codecs.Codec, object interface{
 
 // UnmarshalWithCodec unmarshals the specified data into the object with the specified codec.
 func (s *WebCodecService) UnmarshalWithCodec(codec codecs.Codec, data []byte, object interface{}) error {
+
+	// make sure we have at least one codec
+	s.assertCodecs()
+
 	return codec.Unmarshal(data, object)
 }
