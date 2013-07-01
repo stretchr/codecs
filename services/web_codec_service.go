@@ -22,14 +22,6 @@ var InstalledCodecs []codecs.Codec = []codecs.Codec{new(json.JsonCodec), new(jso
 // currently installed web codecs.
 type WebCodecService struct{}
 
-func (w *WebCodecService) Setup() error {
-	return nil
-}
-
-func (w *WebCodecService) TearDown() {
-
-}
-
 // GetCodecForResponding gets the codec to use to respond based on the
 // given accept string, the extension provided and whether it has a callback
 // or not.
