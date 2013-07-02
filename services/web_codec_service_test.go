@@ -21,9 +21,9 @@ func TestInterface(t *testing.T) {
 	assert.Implements(t, (*CodecService)(nil), NewWebCodecService(), "WebCodecService")
 }
 
-func TestNewWebCodecService(t *testing.T) {
+func TestNewWebCodecService_DefaultCodecs(t *testing.T) {
 	n := NewWebCodecService()
-	assert.Equal(t, 4, len(n.codecs))
+	assert.Equal(t, len(DefaultCodecs), len(n.codecs))
 }
 
 func TestAddCodec(t *testing.T) {

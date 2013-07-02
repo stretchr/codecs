@@ -6,6 +6,7 @@ import (
 	"github.com/stretchr/codecs"
 	"github.com/stretchr/codecs/bson"
 	"github.com/stretchr/codecs/constants"
+	"github.com/stretchr/codecs/csv"
 	"github.com/stretchr/codecs/json"
 	"github.com/stretchr/codecs/jsonp"
 	"github.com/stretchr/codecs/msgpack"
@@ -14,6 +15,10 @@ import (
 
 // ErrorContentTypeNotSupported is the error for when a content type is requested that is not supported by the system
 var ErrorContentTypeNotSupported = errors.New("Content type is not supported.")
+
+// DefaultCodecs represents the list of Codecs that get added automatically by
+// a call to NewWebCodecService.
+var DefaultCodecs = []codecs.Codec{new(json.JsonCodec), new(jsonp.JsonPCodec), new(msgpack.MsgpackCodec), new(bson.BsonCodec), new(csv.CsvCodec)}
 
 // WebCodecService represents the default implementation for providing access to the
 // currently installed web codecs.
@@ -25,7 +30,7 @@ type WebCodecService struct {
 // added.
 func NewWebCodecService() *WebCodecService {
 	s := new(WebCodecService)
-	s.codecs = []codecs.Codec{new(json.JsonCodec), new(jsonp.JsonPCodec), new(msgpack.MsgpackCodec), new(bson.BsonCodec)}
+	s.codecs = DefaultCodecs
 	return s
 }
 

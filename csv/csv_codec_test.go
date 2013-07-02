@@ -40,7 +40,7 @@ func TestMarshal_SingleObject(t *testing.T) {
 
 	if assert.NoError(t, marshalErr) {
 
-		assert.Equal(t, "field1,field2,field3\none,two,three\n", string(bytes))
+		assert.Equal(t, "field1,field2,field3\n\"\"\"one\"\"\",\"\"\"two\"\"\",\"\"\"three\"\"\"\n", string(bytes))
 
 	}
 
@@ -58,7 +58,7 @@ func TestMarshal_MultipleObjects(t *testing.T) {
 
 	if assert.NoError(t, marshalErr) {
 
-		assert.Equal(t, "field1,field2,field3\noneA,twoA,threeA\noneB,twoB,threeB\noneC,twoC,threeC\n", string(bytes))
+		assert.Equal(t, "field1,field2,field3\n\"\"\"oneA\"\"\",\"\"\"twoA\"\"\",\"\"\"threeA\"\"\"\n\"\"\"oneB\"\"\",\"\"\"twoB\"\"\",\"\"\"threeB\"\"\"\n\"\"\"oneC\"\"\",\"\"\"twoC\"\"\",\"\"\"threeC\"\"\"\n", string(bytes))
 
 	}
 
@@ -76,7 +76,24 @@ func TestMarshal_MultipleObjects_WithDisimilarSchema(t *testing.T) {
 
 	if assert.NoError(t, marshalErr) {
 
-		assert.Equal(t, "name,age,language,first_name,last_name,speaks\nMat,30,en,\"\",\"\",\"\"\n\"\",28,\"\",Tyler,Bunnell,\"\"\nRyan,26,\"\",\"\",\"\",english\n", string(bytes))
+		assert.Equal(t, "name,age,language,first_name,last_name,speaks\n\"\"\"Mat\"\"\",30,\"\"\"en\"\"\",\"\",\"\",\"\"\n\"\",28,\"\",\"\"\"Tyler\"\"\",\"\"\"Bunnell\"\"\",\"\"\n\"\"\"Ryan\"\"\",26,\"\",\"\",\"\",\"\"\"english\"\"\"\n", string(bytes))
+
+	}
+
+}
+
+func TestMarshal_ComplexMap(t *testing.T) {
+
+	obj1 := map[string]interface{}{"name": "Mat", "age": 30, "language": "en"}
+	obj2 := map[string]interface{}{"obj": obj1}
+	obj3 := map[string]interface{}{"another_obj": obj2}
+
+	csvCodec := new(CsvCodec)
+	bytes, marshalErr := csvCodec.Marshal(obj3, nil)
+
+	if assert.NoError(t, marshalErr) {
+
+		assert.Equal(t, "another_obj\n\"{\"\"obj\"\":{\"\"age\"\":30,\"\"language\"\":\"\"en\"\",\"\"name\"\":\"\"Mat\"\"}}\"\n", string(bytes))
 
 	}
 
@@ -137,6 +154,10 @@ func TestUnmarshal_MultipleObjects(t *testing.T) {
 			t.Errorf("Expected to be array type, not %s.", reflect.TypeOf(obj).Elem().Name())
 		}
 	}
+
+}
+
+func TestStringValueOf(t *testing.T) {
 
 }
 

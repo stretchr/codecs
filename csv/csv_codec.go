@@ -3,8 +3,9 @@ package csv
 import (
 	"bytes"
 	"encoding/csv"
-	"fmt"
+	"encoding/json"
 	"github.com/stretchr/codecs/constants"
+	"github.com/stretchr/stew/objects"
 	"reflect"
 	"strings"
 )
@@ -73,7 +74,13 @@ func (c *CsvCodec) Marshal(object interface{}, options map[string]interface{}) (
 			}
 
 			// set the field
-			rowData[fieldIndex] = fmt.Sprintf("%v", v)
+			str, strErr := stringValueOf(v)
+
+			if strErr != nil {
+				return nil, strErr
+			}
+
+			rowData[fieldIndex] = string(str)
 
 		}
 
@@ -177,4 +184,17 @@ func mapFromFieldsAndRow(fields, row []string) map[string]interface{} {
 	}
 
 	return m
+}
+
+// stringValueOf generates a simple string value
+func stringValueOf(obj interface{}) ([]byte, error) {
+
+	switch obj.(type) {
+	case map[string]interface{}:
+	case objects.Map:
+
+	}
+
+	return json.Marshal(obj)
+
 }
