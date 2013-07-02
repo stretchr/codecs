@@ -5,7 +5,6 @@ import (
 	"github.com/stretchr/codecs"
 	"github.com/stretchr/codecs/constants"
 	"github.com/stretchr/testify/assert"
-	"log"
 	"reflect"
 	"testing"
 )
@@ -171,8 +170,6 @@ func TestUnMarshal_ComplexMap(t *testing.T) {
 	// unmarshal it back
 	var obj interface{}
 	csvCodec.Unmarshal(bytes, &obj)
-
-	log.Printf("%s", obj)
 
 	if objmap, ok := obj.(map[string]interface{}); ok {
 		if objmap2, ok := objmap["another_obj"].(map[string]interface{}); ok {
