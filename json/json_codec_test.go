@@ -7,6 +7,8 @@ import (
 	"testing"
 )
 
+var codec JsonCodec
+
 func TestInterface(t *testing.T) {
 
 	assert.Implements(t, (*codecs.Codec)(nil), new(JsonCodec), "JsonCodec")
@@ -14,8 +16,6 @@ func TestInterface(t *testing.T) {
 }
 
 func TestMarshal(t *testing.T) {
-
-	codec := new(JsonCodec)
 
 	obj := make(map[string]string)
 	obj["name"] = "Mat"
@@ -32,7 +32,6 @@ func TestMarshal(t *testing.T) {
 
 func TestUnmarshal(t *testing.T) {
 
-	codec := new(JsonCodec)
 	jsonString := `{"name":"Mat"}`
 	var object map[string]interface{}
 
@@ -48,21 +47,18 @@ func TestUnmarshal(t *testing.T) {
 
 func TestResponseContentType(t *testing.T) {
 
-	codec := new(JsonCodec)
 	assert.Equal(t, codec.ContentType(), constants.ContentTypeJSON)
 
 }
 
 func TestFileExtension(t *testing.T) {
 
-	codec := new(JsonCodec)
 	assert.Equal(t, constants.FileExtensionJSON, codec.FileExtension())
 
 }
 
 func TestCanMarshalWithCallback(t *testing.T) {
 
-	codec := new(JsonCodec)
 	assert.False(t, codec.CanMarshalWithCallback())
 
 }

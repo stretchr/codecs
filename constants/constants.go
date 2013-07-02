@@ -15,6 +15,8 @@ const (
 	FileExtensionMsgpack string = ".msgpack"
 	ContentTypeCSV       string = "text/csv"
 	FileExtensionCSV     string = ".csv"
+	ContentTypeXML       string = "text/xml"
+	FileExtensionXML     string = ".xml"
 )
 
 const (

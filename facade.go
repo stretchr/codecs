@@ -44,7 +44,7 @@ type Facade interface {
 	// object, as it is possible that the response from PublicData will be modified
 	// before being used, and it is bad practice for these methods to alter the
 	// original data object.
-	PublicData(map[string]interface{}) (interface{}, error)
+	PublicData(options map[string]interface{}) (publicData interface{}, err error)
 }
 
 // PublicData gets the data that is considered public for the specified object.
@@ -89,7 +89,7 @@ func PublicDataMap(object interface{}, options map[string]interface{}) (objects.
 		if dataMap, ok := data.(objects.Map); ok {
 			return dataMap, nil
 		} else {
-			panic(fmt.Sprintf("codecs: PublicDataMap must refer to a map[string]interface{} or objects.Map, not %s.", reflect.TypeOf(data)))
+			panic(fmt.Sprintf("codecs: PublicDataMap must refer to a map[string]interface{} or objects.Map, not %s.  Did you mean to implement the Facade interface?", reflect.TypeOf(data)))
 		}
 	}
 
