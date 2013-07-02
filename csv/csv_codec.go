@@ -10,6 +10,7 @@ import (
 	"strings"
 )
 
+// CsvCodec converts objects to and from CSV format.
 type CsvCodec struct{}
 
 // Converts an object to JSON.
@@ -204,7 +205,9 @@ func mapFromFieldsAndRow(fields, row []string) (map[string]interface{}, error) {
 	return m, nil
 }
 
-// marshalValue generates a string of the specified object.
+// marshalValue generates a string of the specified object by
+// using the JSON encoding capabilities.  If it fails, the object
+// is just returned as a raw string.
 func marshalValue(obj interface{}) (string, error) {
 	s, e := json.Marshal(obj)
 	if e != nil {
@@ -213,7 +216,9 @@ func marshalValue(obj interface{}) (string, error) {
 	return string(s), nil
 }
 
-// unmarshalValue creates an object from the specified string.
+// unmarshalValue creates an object from the specified string by
+// using the JSON encoding capabilities.  If it fails, the raw value is
+// returned as a string.
 func unmarshalValue(value string) (interface{}, error) {
 
 	var obj interface{}
