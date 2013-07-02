@@ -4,8 +4,8 @@ import (
 	"bytes"
 	"encoding/csv"
 	"encoding/json"
+	"fmt"
 	"github.com/stretchr/codecs/constants"
-	"github.com/stretchr/stew/objects"
 	"reflect"
 	"strings"
 )
@@ -74,7 +74,7 @@ func (c *CsvCodec) Marshal(object interface{}, options map[string]interface{}) (
 			}
 
 			// set the field
-			str, strErr := stringValueOf(v)
+			str, strErr := marshalValue(v)
 
 			if strErr != nil {
 				return nil, strErr
@@ -131,7 +131,11 @@ func (c *CsvCodec) Unmarshal(data []byte, obj interface{}) error {
 		// one record
 
 		// get the object
-		object := mapFromFieldsAndRow(records[0], records[1])
+		object, err := mapFromFieldsAndRow(records[0], records[1])
+
+		if err != nil {
+			return err
+		}
 
 		// set the obj value
 		rv.Elem().Set(reflect.ValueOf(object))
@@ -147,8 +151,15 @@ func (c *CsvCodec) Unmarshal(data []byte, obj interface{}) error {
 		fields := records[0]
 
 		// add each row
+		var err error
 		for i := 1; i < lenRecords; i++ {
-			rows[i-1] = mapFromFieldsAndRow(fields, records[i])
+
+			rows[i-1], err = mapFromFieldsAndRow(fields, records[i])
+
+			if err != nil {
+				return err
+			}
+
 		}
 
 		// set the obj value
@@ -176,25 +187,42 @@ func (c *CsvCodec) CanMarshalWithCallback() bool {
 
 // mapFromFieldsAndRow makes a map[string]interface{} from the given fields and
 // row data.
-func mapFromFieldsAndRow(fields, row []string) map[string]interface{} {
+func mapFromFieldsAndRow(fields, row []string) (map[string]interface{}, error) {
 	m := make(map[string]interface{})
 
 	for index, item := range row {
-		m[fields[index]] = item
+
+		value, unmarshalErr := unmarshalValue(item)
+
+		if unmarshalErr != nil {
+			return nil, unmarshalErr
+		}
+
+		m[fields[index]] = value
 	}
 
-	return m
+	return m, nil
 }
 
-// stringValueOf generates a simple string value
-func stringValueOf(obj interface{}) ([]byte, error) {
+// marshalValue generates a string of the specified object.
+func marshalValue(obj interface{}) (string, error) {
+	s, e := json.Marshal(obj)
+	if e != nil {
+		return fmt.Sprintf("%v", s), nil
+	}
+	return string(s), nil
+}
 
-	switch obj.(type) {
-	case map[string]interface{}:
-	case objects.Map:
+// unmarshalValue creates an object from the specified string.
+func unmarshalValue(value string) (interface{}, error) {
 
+	var obj interface{}
+	err := json.Unmarshal([]byte(value), &obj)
+
+	if err != nil {
+		return value, nil
 	}
 
-	return json.Marshal(obj)
+	return obj, nil
 
 }

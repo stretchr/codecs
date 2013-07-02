@@ -1,9 +1,11 @@
 package csv
 
 import (
+	"fmt"
 	"github.com/stretchr/codecs"
 	"github.com/stretchr/codecs/constants"
 	"github.com/stretchr/testify/assert"
+	"log"
 	"reflect"
 	"testing"
 )
@@ -19,9 +21,9 @@ func TestMapFromFieldsAndRow(t *testing.T) {
 	fields := []string{"field1", "field2", "field3"}
 	row := []string{"one", "two", "three"}
 
-	m := mapFromFieldsAndRow(fields, row)
+	m, err := mapFromFieldsAndRow(fields, row)
 
-	if assert.NotNil(t, m) {
+	if assert.NoError(t, err) && assert.NotNil(t, m) {
 
 		assert.Equal(t, "one", m["field1"])
 		assert.Equal(t, "two", m["field2"])
@@ -157,7 +159,71 @@ func TestUnmarshal_MultipleObjects(t *testing.T) {
 
 }
 
-func TestStringValueOf(t *testing.T) {
+func TestUnMarshal_ComplexMap(t *testing.T) {
+
+	obj1 := map[string]interface{}{"name": "Mat", "age": 30, "language": "en"}
+	obj2 := map[string]interface{}{"obj": obj1}
+	obj3 := map[string]interface{}{"another_obj": obj2}
+
+	csvCodec := new(CsvCodec)
+	bytes, _ := csvCodec.Marshal(obj3, nil)
+
+	// unmarshal it back
+	var obj interface{}
+	csvCodec.Unmarshal(bytes, &obj)
+
+	log.Printf("%s", obj)
+
+	if objmap, ok := obj.(map[string]interface{}); ok {
+		if objmap2, ok := objmap["another_obj"].(map[string]interface{}); ok {
+			if objmap3, ok := objmap2["obj"].(map[string]interface{}); ok {
+
+				assert.Equal(t, "Mat", objmap3["name"])
+				assert.Equal(t, 30, objmap3["age"])
+				assert.Equal(t, "en", objmap3["language"])
+
+			} else {
+				assert.True(t, false, "another_obj.obj should be msi")
+			}
+		} else {
+			assert.True(t, false, "another_obj should be msi")
+		}
+	} else {
+		assert.True(t, false, "obj should be msi")
+	}
+
+}
+
+func getMarshalValue(v interface{}) string {
+	s, e := marshalValue(v)
+	if e != nil {
+		panic(fmt.Sprintf("Failed to marshal: %v (%s)", v, e))
+	}
+	return string(s)
+}
+
+func getUnmarshalValue(s string) interface{} {
+	obj, e := unmarshalValue(s)
+	if e != nil {
+		panic(fmt.Sprintf("Failed to unmarshal: %v (%s)", s, e))
+	}
+	return obj
+}
+
+func TestMarshalValue(t *testing.T) {
+
+	assert.Equal(t, "\"str\"", getMarshalValue("str"))
+	assert.Equal(t, "18", getMarshalValue(18))
+	assert.Equal(t, "true", getMarshalValue(true))
+
+}
+
+func TestUnmarshalValue(t *testing.T) {
+
+	assert.Equal(t, "str", getUnmarshalValue("\"str\""))
+	assert.Equal(t, "str", getUnmarshalValue("str"))
+	assert.Equal(t, 18, getUnmarshalValue("18"))
+	assert.Equal(t, true, getUnmarshalValue("true"))
 
 }
 
