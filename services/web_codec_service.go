@@ -10,6 +10,7 @@ import (
 	"github.com/stretchr/codecs/json"
 	"github.com/stretchr/codecs/jsonp"
 	"github.com/stretchr/codecs/msgpack"
+	"github.com/stretchr/codecs/xml"
 	"strings"
 )
 
@@ -18,7 +19,7 @@ var ErrorContentTypeNotSupported = errors.New("Content type is not supported.")
 
 // DefaultCodecs represents the list of Codecs that get added automatically by
 // a call to NewWebCodecService.
-var DefaultCodecs = []codecs.Codec{new(json.JsonCodec), new(jsonp.JsonPCodec), new(msgpack.MsgpackCodec), new(bson.BsonCodec), new(csv.CsvCodec)}
+var DefaultCodecs = []codecs.Codec{new(json.JsonCodec), new(jsonp.JsonPCodec), new(msgpack.MsgpackCodec), new(bson.BsonCodec), new(csv.CsvCodec), new(xml.SimpleXmlCodec)}
 
 // WebCodecService represents the default implementation for providing access to the
 // currently installed web codecs.
