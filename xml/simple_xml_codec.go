@@ -3,9 +3,11 @@ package xml
 import (
 	"errors"
 	"fmt"
+	xml "github.com/clbanning/x2j"
 	"github.com/stretchr/codecs/constants"
 	"github.com/stretchr/stew/objects"
 	"reflect"
+	"strconv"
 	"strings"
 )
 
@@ -16,6 +18,8 @@ const (
 var (
 	Indentation                               string = "  "
 	XMLDeclaration                            string = "<?xml version=\"1.0\"?>"
+	XMLTagFormat                              string = "<%s>"
+	XMLClosingTagFormat                       string = "</%s>"
 	XMLElementFormat                          string = "<%s>%s</%s>"
 	XMLElementFormatIndented                  string = "<%s>\n%s%s\n</%s>"
 	XMLElementWithTypeAttributeFormat         string = "<%s type=\"%s\">%s</%s>"
@@ -24,6 +28,7 @@ var (
 	XMLObjectsElementName                     string = "objects"
 )
 
+// SimpleXmlCodec converts objects to and from simple XML.
 type SimpleXmlCodec struct{}
 
 // Marshal converts an object to a []byte representation.
@@ -41,7 +46,7 @@ func (c *SimpleXmlCodec) Marshal(object interface{}, options map[string]interfac
 
 // Unmarshal converts a []byte representation into an object.
 func (c *SimpleXmlCodec) Unmarshal(data []byte, obj interface{}) error {
-	return errors.New("codecs: xml: Unmarshalling XML is not supported.")
+	return errors.New("codecs: xml: Unmarshalling Simple XML is not yet supported.")
 }
 
 // ContentType gets the content type that this codec handles.
@@ -60,10 +65,120 @@ func (c *SimpleXmlCodec) CanMarshalWithCallback() bool {
 	return false
 }
 
+// unmarshal generates an object from the specified XML bytes.
+func unmarshal(data string, options objects.Map) (interface{}, error) {
+
+	m, err := xml.DocToMap(data)
+
+	if err != nil {
+		return nil, err
+	}
+
+	if object, ok := m[XMLObjectElementName]; ok {
+		return resolveValues(object), nil
+	} else if objects, ok := m[XMLObjectsElementName]; ok {
+		return resolveValues(objects.(map[string]interface{})[XMLObjectElementName]), nil
+	}
+
+	return nil, nil
+
+}
+
+func resolveValues(object interface{}) interface{} {
+
+	switch object.(type) {
+	case map[string]interface{}:
+
+		obj := object.(map[string]interface{})
+
+		// one object
+		for k, v := range obj {
+			obj[k] = resolveValue(v)
+		}
+
+		return obj
+
+	case []interface{}:
+
+		objArr := object.([]interface{})
+
+		for i, obj := range objArr {
+			objArr[i] = resolveValues(obj)
+		}
+
+		return objArr
+
+	}
+
+	// we failed - just return it
+	return object
+}
+
+func resolveValue(value interface{}) interface{} {
+
+	switch value.(type) {
+	case map[string]interface{}:
+
+		valueMap := value.(map[string]interface{})
+
+		if explicitType, ok := valueMap["-type"]; ok {
+
+			switch explicitType {
+			case "int":
+
+				val, err := strconv.ParseInt(valueMap["#text"].(string), 10, 64)
+
+				if err == nil {
+					return val
+				}
+
+			case "bool":
+
+				val, err := strconv.ParseBool(valueMap["#text"].(string))
+
+				if err == nil {
+					return val
+				}
+
+			case "float":
+
+				val, err := strconv.ParseFloat(valueMap["#text"].(string), 64)
+
+				if err == nil {
+					return val
+				}
+
+			case "uint":
+
+				val, err := strconv.ParseUint(valueMap["#text"].(string), 10, 64)
+
+				if err == nil {
+					return val
+				}
+
+			}
+
+			return valueMap["#text"].(string)
+
+		} else {
+
+			// normal map - do each value too
+			for k, v := range valueMap {
+				valueMap[k] = resolveValue(v)
+			}
+
+		}
+
+	}
+
+	return value
+}
+
 /*
   Custom XML marshalling
 */
 
+// marshal generates XML bytes from the specified object.
 func marshal(object interface{}, doIndent bool, indentLevel int, options objects.Map) ([]byte, error) {
 
 	var nextIndent int = indentLevel + 1
@@ -121,7 +236,7 @@ func element(k string, v interface{}, vString string, doIndent bool, indentLevel
 
 	var typeString string
 	if v != nil && options.Has(OptionIncludeTypeAttributes) {
-		typeString = reflect.TypeOf(v).Name()
+		typeString = getTypeString(v)
 	}
 
 	if doIndent {
@@ -140,5 +255,24 @@ func element(k string, v interface{}, vString string, doIndent bool, indentLevel
 	} else {
 		return fmt.Sprintf(XMLElementFormat, k, vString, k)
 	}
+
+}
+
+// getTypeString gets a simple string describing the type of the object
+// passed in.
+//
+// For simplicity sake, the type size is omitted.
+//
+// For example, all int types (int8, int16, int32, int64) will be represented
+// as "int".
+func getTypeString(obj interface{}) string {
+
+	typeString := reflect.TypeOf(obj).Name()
+
+	// trim off the numbers - no need to worry users about that level of
+	// detail
+	typeString = strings.TrimRight(typeString, "0123456789")
+
+	return typeString
 
 }
