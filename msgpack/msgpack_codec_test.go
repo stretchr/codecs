@@ -44,7 +44,7 @@ func TestUnmarshal(t *testing.T) {
 		t.Errorf("Shouldn't return error: %s", err)
 	}
 
-	assert.Equal(t, "Mat", object["name"])
+	assert.Equal(t, []byte{0x4d, 0x61, 0x74}, object["name"])
 
 }
 
