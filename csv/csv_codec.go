@@ -13,7 +13,7 @@ import (
 // CsvCodec converts objects to and from CSV format.
 type CsvCodec struct{}
 
-// Converts an object to JSON.
+// Converts an object to CSV data.
 func (c *CsvCodec) Marshal(object interface{}, options map[string]interface{}) ([]byte, error) {
 
 	// collect the data rows in a consistent type
@@ -99,7 +99,7 @@ func (c *CsvCodec) Marshal(object interface{}, options map[string]interface{}) (
 	return byteBuffer.Bytes(), nil
 }
 
-// Unmarshal converts JSON into an object.
+// Unmarshal converts CSV data into an object.
 func (c *CsvCodec) Unmarshal(data []byte, obj interface{}) error {
 
 	// check the value
