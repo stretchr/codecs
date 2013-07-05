@@ -1,21 +1,31 @@
 package msgpack
 
 import (
+	"bytes"
 	"github.com/stretchr/codecs/constants"
-	"github.com/ugorji/go-msgpack"
+	"github.com/ugorji/go/codec"
 )
 
 // MsgpackCodec converts objects to and from Msgpack.
 type MsgpackCodec struct{}
 
+var msgpackHandle codec.MsgpackHandle
+
 // Converts an object to Msgpack.
 func (c *MsgpackCodec) Marshal(object interface{}, options map[string]interface{}) ([]byte, error) {
-	return msgpack.Marshal(object)
+
+	byteBuffer := new(bytes.Buffer)
+	enc := codec.NewEncoder(byteBuffer, &msgpackHandle)
+	encErr := enc.Encode(object)
+
+	return byteBuffer.Bytes(), encErr
 }
 
 // Unmarshal converts Msgpack into an object.
 func (c *MsgpackCodec) Unmarshal(data []byte, obj interface{}) error {
-	return msgpack.Unmarshal(data, obj, nil)
+
+	dec := codec.NewDecoder(bytes.NewReader(data), &msgpackHandle)
+	return dec.Decode(&obj)
 }
 
 // ContentType returns the content type for this codec.
