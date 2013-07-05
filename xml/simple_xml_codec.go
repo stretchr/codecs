@@ -1,7 +1,6 @@
 package xml
 
 import (
-	"errors"
 	"fmt"
 	xml "github.com/clbanning/x2j"
 	"github.com/stretchr/codecs/constants"
@@ -40,13 +39,40 @@ func (c *SimpleXmlCodec) Marshal(object interface{}, options map[string]interfac
 	// add the declaration
 	output = append(output, XMLDeclaration)
 
+	// add the rest of the XML
+	bytes, err := marshal(object, true, 0, options)
+
+	if err != nil {
+		return nil, err
+	}
+
+	output = append(output, string(bytes))
+
 	// return the output
 	return []byte(strings.Join(output, "")), nil
 }
 
 // Unmarshal converts a []byte representation into an object.
 func (c *SimpleXmlCodec) Unmarshal(data []byte, obj interface{}) error {
-	return errors.New("codecs: xml: Unmarshalling Simple XML is not yet supported.")
+
+	// check the value
+	rv := reflect.ValueOf(obj)
+	if rv.Kind() != reflect.Ptr || rv.IsNil() {
+		return &InvalidUnmarshalError{reflect.TypeOf(obj)}
+	}
+
+	obj, err := unmarshal(string(data), nil)
+
+	if err != nil {
+		return err
+	}
+
+	// set the obj value
+	rv.Elem().Set(reflect.ValueOf(obj))
+
+	// no errors
+	return nil
+
 }
 
 // ContentType gets the content type that this codec handles.

@@ -1,4 +1,4 @@
-package csv
+package xml
 
 // TODO: consider having this in one place
 
@@ -14,11 +14,11 @@ type InvalidUnmarshalError struct {
 
 func (e *InvalidUnmarshalError) Error() string {
 	if e.Type == nil {
-		return "codecs: csv: Unmarshal(nil)"
+		return "codecs: xml: Unmarshal(nil)"
 	}
 
 	if e.Type.Kind() != reflect.Ptr {
-		return "codecs: csv: Unmarshal(non-pointer " + e.Type.String() + ")"
+		return "codecs: xml: Unmarshal(non-pointer " + e.Type.String() + ")"
 	}
-	return "codecs: csv: Unmarshal(nil " + e.Type.String() + ")"
+	return "codecs: xml: Unmarshal(nil " + e.Type.String() + ")"
 }

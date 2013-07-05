@@ -24,6 +24,7 @@ var DefaultCodecs = []codecs.Codec{new(json.JsonCodec), new(jsonp.JsonPCodec), n
 // WebCodecService represents the default implementation for providing access to the
 // currently installed web codecs.
 type WebCodecService struct {
+	// codecs holds the installed codecs for this service.
 	codecs []codecs.Codec
 }
 

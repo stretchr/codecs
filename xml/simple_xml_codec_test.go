@@ -28,16 +28,35 @@ func TestExtension(t *testing.T) {
 	assert.Equal(t, constants.FileExtensionXML, xmlCodec.FileExtension())
 }
 
-func TestMarshal(t *testing.T) {
+func TestMarshalAndUnmarshal(t *testing.T) {
 
-	data := map[string]interface{}{"name": "Mat"}
-	bytes, marshalErr := xmlCodec.Marshal(data, nil)
-
-	if assert.NoError(t, marshalErr) {
-		assert.Equal(t, "<?xml version=\"1.0\"?>", string(bytes), "Output")
+	// make a big object
+	obj := map[string]interface{}{}
+	obj["name"] = "Mat"
+	obj["age"] = 30
+	obj["address"] = map[string]interface{}{
+		"street":  "Pearl Street",
+		"city":    "Boulder",
+		"state":   "CO",
+		"country": "USA",
+	}
+	obj["animals"] = map[string]interface{}{
+		"favourite": []string{"Dog", "Cat"},
 	}
 
-	// TODO: finish this
+	bytes, marshalErr := xmlCodec.Marshal(obj, nil)
+
+	if assert.NoError(t, marshalErr) {
+		assert.Contains(t, string(bytes), "<?xml version=\"1.0\"?>", "Output")
+	}
+
+	// unmarshal it
+	var newObj interface{}
+	if assert.NoError(t, xmlCodec.Unmarshal(bytes, &newObj)) {
+
+		assert.NotNil(t, newObj)
+
+	}
 
 }
 
