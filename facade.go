@@ -93,10 +93,6 @@ func PublicDataMap(object interface{}, options map[string]interface{}) (objects.
 		}
 	}
 
-	// assume we have an objects.Map
-	mapData := data.(objects.Map)
-
-	return mapData, nil
 }
 
 // publicData performs the work of PublicData keeping track of the level in order

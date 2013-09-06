@@ -26,7 +26,7 @@ func main() {
 	bytes, err := xmlCodec.Marshal(obj, nil)
 
 	if err != nil {
-		log.Println("Failed to marshal simple XML: %s", err)
+		log.Printf("Failed to marshal simple XML: %s", err)
 	} else {
 		log.Printf("%v", string(bytes))
 	}
