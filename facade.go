@@ -92,11 +92,6 @@ func PublicDataMap(object interface{}, options map[string]interface{}) (*objx.Ob
 			panic(fmt.Sprintf("codecs: PublicDataMap must refer to a map[string]interface{} or *objx.Obj, not %s.  Did you mean to implement the Facade interface?", reflect.TypeOf(data)))
 		}
 	}
-
-	// assume we have an *objx.Obj
-	mapData := data.(*objx.Obj)
-
-	return mapData, nil
 }
 
 // publicData performs the work of PublicData keeping track of the level in order
