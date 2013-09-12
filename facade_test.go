@@ -3,7 +3,7 @@ package codecs
 import (
 	"github.com/stretchr/codecs/constants"
 	"github.com/stretchr/codecs/test"
-	"github.com/stretchr/stew/objects"
+	"github.com/stretchr/objx"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/mock"
 	"reflect"
@@ -17,12 +17,12 @@ import (
 func TestPublicData(t *testing.T) {
 
 	o := new(test.TestObjectWithFacade)
-	o.Mock.On("PublicData", map[string]interface{}{}).Return(objects.Map{"theName": "Mat"}, nil)
+	o.Mock.On("PublicData", map[string]interface{}{}).Return(objx.New(map[string]interface{}{"theName": "Mat"}), nil)
 
 	public, err := PublicData(o, map[string]interface{}{})
 
 	if assert.Nil(t, err) {
-		assert.Equal(t, public.(objects.Map)["theName"], "Mat")
+		assert.Equal(t, public.(*objx.Obj).Get("theName").Str(), "Mat")
 	}
 
 	mock.AssertExpectationsForObjects(t, o.Mock)
@@ -32,12 +32,12 @@ func TestPublicData(t *testing.T) {
 func TestPublicDataMap(t *testing.T) {
 
 	o := new(test.TestObjectWithFacade)
-	o.Mock.On("PublicData", map[string]interface{}{}).Return(objects.Map{"theName": "Mat"}, nil)
+	o.Mock.On("PublicData", map[string]interface{}{}).Return(objx.New(map[string]interface{}{"theName": "Mat"}), nil)
 
 	public, err := PublicDataMap(o, map[string]interface{}{})
 
 	if assert.Nil(t, err) {
-		assert.Equal(t, public["theName"], "Mat")
+		assert.Equal(t, public.Get("theName").Str(), "Mat")
 	}
 
 	mock.AssertExpectationsForObjects(t, o.Mock)
@@ -52,7 +52,7 @@ func TestPublicDataMap_WithMSI(t *testing.T) {
 	public, err := PublicDataMap(o, map[string]interface{}{})
 
 	if assert.Nil(t, err) {
-		assert.Equal(t, public["theName"], "Mat")
+		assert.Equal(t, public.Get("theName").Str(), "Mat")
 	}
 
 	mock.AssertExpectationsForObjects(t, o.Mock)
@@ -82,9 +82,9 @@ func TestPublicData_WithArray(t *testing.T) {
 
 	arr := []interface{}{o, o1, o2}
 
-	o.Mock.On("PublicData", map[string]interface{}{}).Return(objects.Map{"theName": "1"}, nil)
-	o1.Mock.On("PublicData", map[string]interface{}{}).Return(objects.Map{"theName": "2"}, nil)
-	o2.Mock.On("PublicData", map[string]interface{}{}).Return(objects.Map{"theName": "3"}, nil)
+	o.Mock.On("PublicData", map[string]interface{}{}).Return(objx.New(map[string]interface{}{"theName": "1"}), nil)
+	o1.Mock.On("PublicData", map[string]interface{}{}).Return(objx.New(map[string]interface{}{"theName": "2"}), nil)
+	o2.Mock.On("PublicData", map[string]interface{}{}).Return(objx.New(map[string]interface{}{"theName": "3"}), nil)
 
 	public, err := PublicData(arr, map[string]interface{}{})
 
@@ -96,9 +96,9 @@ func TestPublicData_WithArray(t *testing.T) {
 
 	publicArray := public.([]interface{})
 	if assert.Equal(t, 3, len(publicArray)) {
-		assert.Equal(t, publicArray[0].(objects.Map)["theName"], "1", "o")
-		assert.Equal(t, publicArray[1].(objects.Map)["theName"], "2", "o1")
-		assert.Equal(t, publicArray[2].(objects.Map)["theName"], "3", "o2")
+		assert.Equal(t, publicArray[0].(*objx.Obj).Get("theName").Str(), "1", "o")
+		assert.Equal(t, publicArray[1].(*objx.Obj).Get("theName").Str(), "2", "o1")
+		assert.Equal(t, publicArray[2].(*objx.Obj).Get("theName").Str(), "3", "o2")
 	}
 
 }
@@ -138,12 +138,12 @@ func TestPublicData_WithRecursion(t *testing.T) {
 
 	o.Mock.On("PublicData", map[string]interface{}{}).Return(o1, nil)
 	o1.Mock.On("PublicData", map[string]interface{}{}).Return(o2, nil)
-	o2.Mock.On("PublicData", map[string]interface{}{}).Return(objects.Map{"theName": "Mat"}, nil)
+	o2.Mock.On("PublicData", map[string]interface{}{}).Return(objx.New(map[string]interface{}{"theName": "Mat"}), nil)
 
 	public, err := PublicData(o, map[string]interface{}{})
 
 	if assert.Nil(t, err) {
-		assert.Equal(t, public.(objects.Map)["theName"], "Mat")
+		assert.Equal(t, public.(*objx.Obj).Get("theName").Str(), "Mat")
 	}
 
 	mock.AssertExpectationsForObjects(t, o.Mock, o1.Mock, o2.Mock)
@@ -160,12 +160,12 @@ func TestPublicData_WithRecursion_WithObjects(t *testing.T) {
 
 	o.Mock.On("PublicData", args).Return(o1, nil)
 	o1.Mock.On("PublicData", args).Return(o2, nil)
-	o2.Mock.On("PublicData", args).Return(objects.Map{"theName": "Mat"}, nil)
+	o2.Mock.On("PublicData", args).Return(objx.New(map[string]interface{}{"theName": "Mat"}), nil)
 
 	public, err := PublicData(o, args)
 
 	if assert.Nil(t, err) {
-		assert.Equal(t, public.(objects.Map)["theName"], "Mat")
+		assert.Equal(t, public.(*objx.Obj).Get("theName").Str(), "Mat")
 	}
 
 	mock.AssertExpectationsForObjects(t, o.Mock, o1.Mock, o2.Mock)

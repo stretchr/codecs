@@ -6,7 +6,7 @@ import (
 	"github.com/stretchr/codecs/constants"
 	"github.com/stretchr/codecs/json"
 	"github.com/stretchr/codecs/test"
-	"github.com/stretchr/stew/objects"
+	"github.com/stretchr/objx"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/mock"
 	"strings"
@@ -157,7 +157,7 @@ func TestMarshalWithCodec(t *testing.T) {
 
 	// make some test stuff
 	var bytesToReturn []byte = []byte("Hello World")
-	var object objects.Map = objects.Map{"Name": "Mat"}
+	var object *objx.Obj = objx.MSI("Name", "Mat")
 	var option1 string = "Option One"
 	var option2 string = "Option Two"
 
@@ -187,7 +187,7 @@ func TestMarshalWithCodec_WithFacade(t *testing.T) {
 	// make some test stuff
 	var bytesToReturn []byte = []byte("Hello World")
 	testObjectWithFacade := new(test.TestObjectWithFacade)
-	object := objects.Map{"Name": "Mat"}
+	object := objx.MSI("Name", "Mat")
 	var option1 string = "Option One"
 	var option2 string = "Option Two"
 
@@ -239,7 +239,7 @@ func TestMarshalWithCodec_WithError(t *testing.T) {
 	service := NewWebCodecService()
 
 	// make some test stuff
-	object := objects.Map{"Name": "Mat"}
+	object := objx.MSI("Name", "Mat")
 	var option1 string = "Option One"
 	var option2 string = "Option Two"
 

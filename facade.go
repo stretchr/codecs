@@ -3,7 +3,7 @@ package codecs
 import (
 	"errors"
 	"fmt"
-	"github.com/stretchr/stew/objects"
+	"github.com/stretchr/objx"
 	"reflect"
 )
 
@@ -67,8 +67,8 @@ func PublicData(object interface{}, options map[string]interface{}) (interface{}
 	return publicData(object, 0, options)
 }
 
-// PublicDataMap calls PublicData and returns the result after type asserting to objects.Map
-func PublicDataMap(object interface{}, options map[string]interface{}) (objects.Map, error) {
+// PublicDataMap calls PublicData and returns the result after type asserting to *objx.Obj
+func PublicDataMap(object interface{}, options map[string]interface{}) (*objx.Obj, error) {
 
 	data, err := publicData(object, 0, options)
 
@@ -82,19 +82,19 @@ func PublicDataMap(object interface{}, options map[string]interface{}) (objects.
 
 	switch data.(type) {
 	case map[string]interface{}:
-		return objects.Map(data.(map[string]interface{})), nil
-	case objects.Map:
-		return data.(objects.Map), nil
+		return objx.New(data.(map[string]interface{})), nil
+	case *objx.Obj:
+		return data.(*objx.Obj), nil
 	default:
-		if dataMap, ok := data.(objects.Map); ok {
+		if dataMap, ok := data.(*objx.Obj); ok {
 			return dataMap, nil
 		} else {
-			panic(fmt.Sprintf("codecs: PublicDataMap must refer to a map[string]interface{} or objects.Map, not %s.  Did you mean to implement the Facade interface?", reflect.TypeOf(data)))
+			panic(fmt.Sprintf("codecs: PublicDataMap must refer to a map[string]interface{} or *objx.Obj, not %s.  Did you mean to implement the Facade interface?", reflect.TypeOf(data)))
 		}
 	}
 
-	// assume we have an objects.Map
-	mapData := data.(objects.Map)
+	// assume we have an *objx.Obj
+	mapData := data.(*objx.Obj)
 
 	return mapData, nil
 }

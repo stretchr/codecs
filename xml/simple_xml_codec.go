@@ -4,7 +4,7 @@ import (
 	"fmt"
 	xml "github.com/clbanning/x2j"
 	"github.com/stretchr/codecs/constants"
-	"github.com/stretchr/stew/objects"
+	"github.com/stretchr/objx"
 	"reflect"
 	"strconv"
 	"strings"
@@ -40,7 +40,7 @@ func (c *SimpleXmlCodec) Marshal(object interface{}, options map[string]interfac
 	output = append(output, XMLDeclaration)
 
 	// add the rest of the XML
-	bytes, err := marshal(object, true, 0, options)
+	bytes, err := marshal(object, true, 0, objx.New(options))
 
 	if err != nil {
 		return nil, err
@@ -92,7 +92,7 @@ func (c *SimpleXmlCodec) CanMarshalWithCallback() bool {
 }
 
 // unmarshal generates an object from the specified XML bytes.
-func unmarshal(data string, options objects.Map) (interface{}, error) {
+func unmarshal(data string, options *objx.Obj) (interface{}, error) {
 
 	m, err := xml.DocToMap(data)
 
@@ -205,7 +205,7 @@ func resolveValue(value interface{}) interface{} {
 */
 
 // marshal generates XML bytes from the specified object.
-func marshal(object interface{}, doIndent bool, indentLevel int, options objects.Map) ([]byte, error) {
+func marshal(object interface{}, doIndent bool, indentLevel int, options *objx.Obj) ([]byte, error) {
 
 	var nextIndent int = indentLevel + 1
 	var output []string
@@ -258,7 +258,7 @@ func marshal(object interface{}, doIndent bool, indentLevel int, options objects
 
 }
 
-func element(k string, v interface{}, vString string, doIndent bool, indentLevel int, options objects.Map) string {
+func element(k string, v interface{}, vString string, doIndent bool, indentLevel int, options *objx.Obj) string {
 
 	var typeString string
 	if v != nil && options.Has(OptionIncludeTypeAttributes) {

@@ -3,7 +3,7 @@ package xml
 import (
 	"github.com/stretchr/codecs"
 	"github.com/stretchr/codecs/constants"
-	"github.com/stretchr/stew/objects"
+	"github.com/stretchr/objx"
 	"github.com/stretchr/testify/assert"
 	"testing"
 )
@@ -74,7 +74,7 @@ func TestMarshal_map(t *testing.T) {
 func TestMarshal_mapWithTypes(t *testing.T) {
 
 	data := map[string]interface{}{"name": "Mat", "age": 30, "yesOrNo": true}
-	options := objects.NewMap(OptionIncludeTypeAttributes, true)
+	options := objx.MSI(OptionIncludeTypeAttributes, true)
 	bytes, marshalErr := marshal(data, false, 0, options)
 
 	if assert.NoError(t, marshalErr) {
