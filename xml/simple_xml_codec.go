@@ -92,7 +92,7 @@ func (c *SimpleXmlCodec) CanMarshalWithCallback() bool {
 }
 
 // unmarshal generates an object from the specified XML bytes.
-func unmarshal(data string, options *objx.Obj) (interface{}, error) {
+func unmarshal(data string, options *objx.Map) (interface{}, error) {
 
 	m, err := xml.DocToMap(data)
 
@@ -205,7 +205,7 @@ func resolveValue(value interface{}) interface{} {
 */
 
 // marshal generates XML bytes from the specified object.
-func marshal(object interface{}, doIndent bool, indentLevel int, options *objx.Obj) ([]byte, error) {
+func marshal(object interface{}, doIndent bool, indentLevel int, options *objx.Map) ([]byte, error) {
 
 	var nextIndent int = indentLevel + 1
 	var output []string
@@ -258,7 +258,7 @@ func marshal(object interface{}, doIndent bool, indentLevel int, options *objx.O
 
 }
 
-func element(k string, v interface{}, vString string, doIndent bool, indentLevel int, options *objx.Obj) string {
+func element(k string, v interface{}, vString string, doIndent bool, indentLevel int, options *objx.Map) string {
 
 	var typeString string
 	if v != nil && options.Has(OptionIncludeTypeAttributes) {

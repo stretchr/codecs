@@ -22,7 +22,7 @@ func TestPublicData(t *testing.T) {
 	public, err := PublicData(o, map[string]interface{}{})
 
 	if assert.Nil(t, err) {
-		assert.Equal(t, public.(*objx.Obj).Get("theName").Str(), "Mat")
+		assert.Equal(t, public.(*objx.Map).Get("theName").Str(), "Mat")
 	}
 
 	mock.AssertExpectationsForObjects(t, o.Mock)
@@ -96,9 +96,9 @@ func TestPublicData_WithArray(t *testing.T) {
 
 	publicArray := public.([]interface{})
 	if assert.Equal(t, 3, len(publicArray)) {
-		assert.Equal(t, publicArray[0].(*objx.Obj).Get("theName").Str(), "1", "o")
-		assert.Equal(t, publicArray[1].(*objx.Obj).Get("theName").Str(), "2", "o1")
-		assert.Equal(t, publicArray[2].(*objx.Obj).Get("theName").Str(), "3", "o2")
+		assert.Equal(t, publicArray[0].(*objx.Map).Get("theName").Str(), "1", "o")
+		assert.Equal(t, publicArray[1].(*objx.Map).Get("theName").Str(), "2", "o1")
+		assert.Equal(t, publicArray[2].(*objx.Map).Get("theName").Str(), "3", "o2")
 	}
 
 }
@@ -143,7 +143,7 @@ func TestPublicData_WithRecursion(t *testing.T) {
 	public, err := PublicData(o, map[string]interface{}{})
 
 	if assert.Nil(t, err) {
-		assert.Equal(t, public.(*objx.Obj).Get("theName").Str(), "Mat")
+		assert.Equal(t, public.(*objx.Map).Get("theName").Str(), "Mat")
 	}
 
 	mock.AssertExpectationsForObjects(t, o.Mock, o1.Mock, o2.Mock)
@@ -165,7 +165,7 @@ func TestPublicData_WithRecursion_WithObjects(t *testing.T) {
 	public, err := PublicData(o, args)
 
 	if assert.Nil(t, err) {
-		assert.Equal(t, public.(*objx.Obj).Get("theName").Str(), "Mat")
+		assert.Equal(t, public.(*objx.Map).Get("theName").Str(), "Mat")
 	}
 
 	mock.AssertExpectationsForObjects(t, o.Mock, o1.Mock, o2.Mock)

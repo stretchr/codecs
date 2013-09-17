@@ -157,7 +157,7 @@ func TestMarshalWithCodec(t *testing.T) {
 
 	// make some test stuff
 	var bytesToReturn []byte = []byte("Hello World")
-	var object *objx.Obj = objx.MSI("Name", "Mat")
+	var object *objx.Map = objx.MSI("Name", "Mat")
 	var option1 string = "Option One"
 	var option2 string = "Option Two"
 
