@@ -67,8 +67,8 @@ func PublicData(object interface{}, options map[string]interface{}) (interface{}
 	return publicData(object, 0, options)
 }
 
-// PublicDataMap calls PublicData and returns the result after type asserting to *objx.Map
-func PublicDataMap(object interface{}, options map[string]interface{}) (*objx.Map, error) {
+// PublicDataMap calls PublicData and returns the result after type asserting to objx.Map
+func PublicDataMap(object interface{}, options map[string]interface{}) (objx.Map, error) {
 
 	data, err := publicData(object, 0, options)
 
@@ -83,13 +83,13 @@ func PublicDataMap(object interface{}, options map[string]interface{}) (*objx.Ma
 	switch data.(type) {
 	case map[string]interface{}:
 		return objx.New(data.(map[string]interface{})), nil
-	case *objx.Map:
-		return data.(*objx.Map), nil
+	case objx.Map:
+		return data.(objx.Map), nil
 	default:
-		if dataMap, ok := data.(*objx.Map); ok {
+		if dataMap, ok := data.(objx.Map); ok {
 			return dataMap, nil
 		} else {
-			panic(fmt.Sprintf("codecs: PublicDataMap must refer to a map[string]interface{} or *objx.Map, not %s.  Did you mean to implement the Facade interface?", reflect.TypeOf(data)))
+			panic(fmt.Sprintf("codecs: PublicDataMap must refer to a map[string]interface{} or objx.Map, not %s.  Did you mean to implement the Facade interface?", reflect.TypeOf(data)))
 		}
 	}
 }
