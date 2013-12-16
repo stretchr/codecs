@@ -10,7 +10,7 @@ type Codec interface {
 	// Unmarshal converts a []byte representation into an object.
 	Unmarshal(data []byte, obj interface{}) error
 
-	// ContentType gets the content type that the codec handles.
+	// ContentType gets the default ContentType for this codec.
 	ContentType() string
 
 	// FileExtension returns the file extension by which the codec is represented.
@@ -19,4 +19,15 @@ type Codec interface {
 	// CanMarshalWithCallback gets whether the codec is capable of marshalling a response with
 	// a callback parameter.
 	CanMarshalWithCallback() bool
+}
+
+// ContentTypeMatcherCodec is a Codec that has a method to be used for
+// matching content types against any content types that the codec can
+// support.
+type ContentTypeMatcherCodec interface {
+	Codec
+
+	// ContentTypeSupported returns true if the passed in ContentType
+	// string is supported by this codec, false otherwise.
+	ContentTypeSupported(string) bool
 }

@@ -72,10 +72,20 @@ func (s *WebCodecService) GetCodecForResponding(accept, extension string, hasCal
 		}
 	}
 
+	if accept != "" {
+		orderedAccept, err := OrderAcceptHeader(accept)
+		if err != nil {
+			return nil, err
+		}
+		for _, entry := range orderedAccept {
+			if codec, err := s.GetCodec(entry.ContentType); err == nil {
+				return codec, nil
+			}
+		}
+	}
+
 	for _, codec := range s.codecs {
-		if strings.Contains(strings.ToLower(accept), strings.ToLower(codec.ContentType())) {
-			return codec, nil
-		} else if strings.ToLower(codec.FileExtension()) == strings.ToLower(extension) {
+		if strings.ToLower(codec.FileExtension()) == strings.ToLower(extension) {
 			return codec, nil
 		} else if hasCallback && codec.CanMarshalWithCallback() {
 			return codec, nil
@@ -87,21 +97,38 @@ func (s *WebCodecService) GetCodecForResponding(accept, extension string, hasCal
 }
 
 // GetCodec gets the codec to use to interpret the request based on the
-// content type.
-func (s *WebCodecService) GetCodec(contentType string) (codecs.Codec, error) {
+// content type.  The passed in content type can be a string or an
+// instance of ContentType.
+func (s *WebCodecService) GetCodec(contentTypeParam interface{}) (codecs.Codec, error) {
 
 	// make sure we have at least one codec
 	s.assertCodecs()
 
+	var contentType *ContentType
+	switch contentTypeParam := contentTypeParam.(type) {
+	case string:
+		var err error
+		contentType, err = ParseContentType(contentTypeParam)
+		if err != nil {
+			return nil, err
+		}
+	case *ContentType:
+		contentType = contentTypeParam
+	}
+
 	for _, codec := range s.codecs {
 
 		// default codec
-		if len(contentType) == 0 && codec.ContentType() == constants.ContentTypeJSON {
+		if contentType == nil && codec.ContentType() == constants.ContentTypeJSON {
 			return codec, nil
 		}
 
 		// match the content type
-		if strings.Contains(strings.ToLower(contentType), strings.ToLower(codec.ContentType())) {
+		if matcher, ok := codec.(codecs.ContentTypeMatcherCodec); ok {
+			if matcher.ContentTypeSupported(contentType.MimeType) {
+				return wrapCodec(codec, contentType.MimeType), nil
+			}
+		} else if contentType.MimeType == strings.ToLower(codec.ContentType()) {
 			return codec, nil
 		}
 

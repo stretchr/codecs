@@ -27,6 +27,11 @@ var (
 	XMLObjectsElementName                     string = "objects"
 )
 
+var validXmlContentTypes = []string{
+	"text/xml",
+	"application/xml",
+}
+
 // SimpleXmlCodec converts objects to and from simple XML.
 type SimpleXmlCodec struct{}
 
@@ -89,6 +94,15 @@ func (c *SimpleXmlCodec) FileExtension() string {
 // a callback parameter.
 func (c *SimpleXmlCodec) CanMarshalWithCallback() bool {
 	return false
+}
+
+func (c *SimpleXmlCodec) ContentTypeSupported(contentType string) bool {
+	for _, supportedType := range validXmlContentTypes {
+		if supportedType == contentType {
+			return true
+		}
+	}
+	return contentType == c.ContentType()
 }
 
 // unmarshal generates an object from the specified XML bytes.
