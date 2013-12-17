@@ -74,7 +74,8 @@ func (entry *AcceptEntry) CompareTo(otherEntry *AcceptEntry) int {
 // and preference levels will decrease as you move right in the tree.
 type AcceptTree struct {
 	Value *AcceptEntry
-	Left *AcceptTree
+	Size  int
+	Left  *AcceptTree
 	Right *AcceptTree
 }
 
@@ -85,32 +86,43 @@ func (tree *AcceptTree) Add(next *AcceptEntry) {
 		tree.Value = next
 	} else if next.CompareTo(tree.Value) > 0 {
 		if tree.Left == nil {
-			tree.Left = &AcceptTree{Value: next}
+			tree.Left = &AcceptTree{Value: next, Size: 1}
 		} else {
 			tree.Left.Add(next)
 		}
 	} else {
 		if tree.Right == nil {
-			tree.Right = &AcceptTree{Value: next}
+			tree.Right = &AcceptTree{Value: next, Size: 1}
 		} else {
 			tree.Right.Add(next)
 		}
 	}
+	tree.Size++
 }
 
 // Flatten returns the AcceptTree's values in proper order of
 // preference as a []*AcceptEntry value.
-func (tree *AcceptTree) Flatten() (entries []*AcceptEntry) {
+func (tree *AcceptTree) Flatten() []*AcceptEntry {
+	entries := make([]*AcceptEntry, 0, tree.Size)
+	tree.flattenToTarget(&entries)
+	return entries
+}
+
+// flattenToTarget is a helper method for Flatten, which takes a
+// pointer to a slice of AcceptEntry pointers and appends all values
+// in the tree to it.  This is so that Flatten can allocate all
+// required space for its return value, then have flattenToTarget
+// populate the pre-allocateed space with values.
+func (tree *AcceptTree) flattenToTarget(target *[]*AcceptEntry) {
 	if tree.Value != nil {
 		if tree.Left != nil {
-			entries = append(entries, tree.Left.Flatten()...)
+			tree.Left.flattenToTarget(target)
 		}
-		entries = append(entries, tree.Value)
+		*target = append(*target, tree.Value)
 		if tree.Right != nil {
-			entries = append(entries, tree.Right.Flatten()...)
+			tree.Right.flattenToTarget(target)
 		}
 	}
-	return
 }
 
 // OrderAcceptHeader reads an Accept header and pulls out the various
