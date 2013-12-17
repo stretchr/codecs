@@ -1,8 +1,8 @@
 package services
 
 import (
-	"strings"
 	"errors"
+	"strings"
 )
 
 // parseParams takes a raw string of parameters passed to a content
@@ -26,7 +26,7 @@ func parseParams(rawParams []string) (map[string]string, error) {
 // parameters, such as that passed in an HTTP Accept or Content-Type
 // header.
 type ContentType struct {
-	MimeType string
+	MimeType   string
 	Parameters map[string]string
 }
 

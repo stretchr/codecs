@@ -2,14 +2,14 @@ package services
 
 import (
 	"github.com/stretchr/testify/assert"
-	"testing"
 	"strings"
+	"testing"
 )
 
 func TestParseAccept_NoParams(t *testing.T) {
 	acceptString := "application/json"
 	accept, err := ParseAcceptEntry(acceptString)
-	assert.NoError(t, err, acceptString + " should parse with no errors")
+	assert.NoError(t, err, acceptString+" should parse with no errors")
 	assert.Equal(t, acceptString, accept.ContentType.MimeType)
 	assert.Equal(t, accept.Quality, 1.0)
 }
@@ -19,17 +19,17 @@ func TestParseAccept_QualityParam(t *testing.T) {
 	expectedQuality := 0.4
 
 	accept, err := ParseAcceptEntry(acceptString)
-	assert.NoError(t, err, acceptString + " should parse with no errors")
+	assert.NoError(t, err, acceptString+" should parse with no errors")
 	assert.Equal(t, accept.Quality, expectedQuality)
 }
 
 func TestAcceptEntry_Equal(t *testing.T) {
 	entryA := &AcceptEntry{
-		Quality: 1.0,
+		Quality:          1.0,
 		specificityCount: 0,
 	}
 	entryB := &AcceptEntry{
-		Quality: 1.0,
+		Quality:          1.0,
 		specificityCount: 0,
 	}
 	assert.Equal(t, entryA.CompareTo(entryB), 0, "Entries with equal quality and specificity should be equal")
@@ -37,11 +37,11 @@ func TestAcceptEntry_Equal(t *testing.T) {
 
 func TestAcceptEntry_Quality(t *testing.T) {
 	greater := &AcceptEntry{
-		Quality: 0.8,
+		Quality:          0.8,
 		specificityCount: 0,
 	}
 	lesser := &AcceptEntry{
-		Quality: 0.3,
+		Quality:          0.3,
 		specificityCount: 10,
 	}
 	assert.True(t, greater.CompareTo(lesser) > 0, "Higher quality should come out greater")
@@ -50,11 +50,11 @@ func TestAcceptEntry_Quality(t *testing.T) {
 
 func TestAcceptEntry_Specificity(t *testing.T) {
 	greater := &AcceptEntry{
-		Quality: 1.0,
+		Quality:          1.0,
 		specificityCount: 2,
 	}
 	lesser := &AcceptEntry{
-		Quality: 1.0,
+		Quality:          1.0,
 		specificityCount: 1,
 	}
 	assert.True(t, greater.CompareTo(lesser) > 0, "At equal quality, higher specificity should come out greater")

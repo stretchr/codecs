@@ -1,8 +1,8 @@
 package services
 
 import (
-	"strings"
 	"strconv"
+	"strings"
 )
 
 // AcceptEntry represents a single entry within an Accept header.  It

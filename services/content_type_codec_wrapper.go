@@ -9,13 +9,13 @@ import (
 // value, usually for the purposes of returning the ContentType that
 // was requested in an Accept header.
 type contentTypeCodecWrapper struct {
-	codec codecs.Codec
+	codec       codecs.Codec
 	contentType string
 }
 
 func wrapCodec(c codecs.Codec, typeString string) codecs.Codec {
 	return &contentTypeCodecWrapper{
-		codec: c,
+		codec:       c,
 		contentType: typeString,
 	}
 }

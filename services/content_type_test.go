@@ -1,8 +1,8 @@
 package services
 
 import (
-	"testing"
 	"github.com/stretchr/testify/assert"
+	"testing"
 )
 
 func TestParseContentType_NoParams(t *testing.T) {
@@ -16,7 +16,7 @@ func TestParseContentType_WithParams(t *testing.T) {
 	contentTypeString := "application/xml; q=0.7; test=hello"
 	expectedMimeType := "application/xml"
 	expectedParams := map[string]string{
-		"q": "0.7",
+		"q":    "0.7",
 		"test": "hello",
 	}
 	contentType, err := ParseContentType(contentTypeString)
