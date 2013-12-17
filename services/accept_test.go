@@ -96,3 +96,21 @@ func TestOrderAcceptHeader_VariedQualityAndSpecificity(t *testing.T) {
 		assert.Equal(t, entry.ContentType.MimeType, expectedType)
 	}
 }
+
+// AcceptTree.Flatten should always allocate exactly as much memory as
+// it needs.  If capacity and length of the return value are not
+// equal, something is wrong.
+func TestOrderAcceptHeader_FlattenPerformance(t *testing.T) {
+	testHeaders := []string{
+		"",
+		"application/json",
+		"application/xml; q=0.7, */*; q=0.1, text/*; q=0.1, application/json, text/xml; q=0.7",
+	}
+
+	for _, testHeader := range testHeaders {
+		orderedAccept, err := OrderAcceptHeader(testHeader)
+		assert.NoError(t, err)
+		assert.Equal(t, len(orderedAccept), cap(orderedAccept),
+			"Flatten should allocate exactly as much memory as it needs; failed header: "+testHeader)
+	}
+}
