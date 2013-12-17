@@ -78,7 +78,7 @@ func (s *WebCodecService) GetCodecForResponding(accept, extension string, hasCal
 			return nil, err
 		}
 		for _, entry := range orderedAccept {
-			if codec, err := s.GetCodec(entry.ContentType); err == nil {
+			if codec, err := s.getCodecByContentType(entry.ContentType); err == nil {
 				return codec, nil
 			}
 		}
@@ -99,22 +99,22 @@ func (s *WebCodecService) GetCodecForResponding(accept, extension string, hasCal
 // GetCodec gets the codec to use to interpret the request based on the
 // content type.  The passed in content type can be a string or a
 // *ContentType.
-func (s *WebCodecService) GetCodec(contentTypeParam interface{}) (codecs.Codec, error) {
+func (s *WebCodecService) GetCodec(contentType string) (codecs.Codec, error) {
 
 	// make sure we have at least one codec
 	s.assertCodecs()
 
-	var contentType *ContentType
-	switch contentTypeParam := contentTypeParam.(type) {
-	case string:
-		var err error
-		contentType, err = ParseContentType(contentTypeParam)
-		if err != nil {
-			return nil, err
-		}
-	case *ContentType:
-		contentType = contentTypeParam
+	parsedContentType, err := ParseContentType(contentType)
+	if err != nil {
+		return nil, err
 	}
+
+	return s.getCodecByContentType(parsedContentType)
+}
+
+// getCodecByContentType is a helper method to retrieve a codec that
+// can handle the passed in *ContentType value.
+func (s *WebCodecService) getCodecByContentType(contentType *ContentType) (codecs.Codec, error) {
 
 	for _, codec := range s.codecs {
 
