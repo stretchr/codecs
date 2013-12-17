@@ -1,8 +1,6 @@
 package services
 
 import (
-	"errors"
-	"fmt"
 	"github.com/stretchr/codecs"
 	"github.com/stretchr/codecs/bson"
 	"github.com/stretchr/codecs/constants"
@@ -14,8 +12,13 @@ import (
 	"strings"
 )
 
-// ErrorContentTypeNotSupported is the error for when a content type is requested that is not supported by the system
-var ErrorContentTypeNotSupported = errors.New("Content type is not supported.")
+type ContentTypeNotSupportedError struct {
+	ContentType string
+}
+
+func (e *ContentTypeNotSupportedError) Error() string {
+	return "Content type " + e.ContentType + " is not supported."
+}
 
 // DefaultCodecs represents the list of Codecs that get added automatically by
 // a call to NewWebCodecService.
@@ -107,7 +110,7 @@ func (s *WebCodecService) GetCodec(contentType string) (codecs.Codec, error) {
 
 	}
 
-	return nil, errors.New(fmt.Sprintf("Content type \"%s\" is not supported.", contentType))
+	return nil, &ContentTypeNotSupportedError{contentType}
 
 }
 
