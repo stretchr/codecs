@@ -128,10 +128,11 @@ func (s *WebCodecService) GetCodec(contentTypeParam interface{}) (codecs.Codec, 
 			if matcher.ContentTypeSupported(contentType.MimeType) {
 				// For codecs.ContentTypeMatcherCodec values, the
 				// matched content type could be different than the
-				// codec's ContentType return value.  The wrapCodec
-				// function will override the default return value of
-				// ContentType() with the matched content type.
-				return wrapCodec(codec, contentType.MimeType), nil
+				// codec's ContentType return value.  The
+				// wrapCodecWithContentType function will override the
+				// default return value of ContentType() with the
+				// matched content type.
+				return wrapCodecWithContentType(codec, contentType.MimeType), nil
 			}
 		} else if contentType.MimeType == strings.ToLower(codec.ContentType()) {
 			return codec, nil

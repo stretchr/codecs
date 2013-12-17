@@ -13,11 +13,12 @@ type contentTypeCodecWrapper struct {
 	contentType string
 }
 
-// wrapCodec takes a codecs.Codec and a mime type string, returning a
-// codecs.Codec that acts exactly like the passed in codecs.Codec
-// except that the ContentType() method will return the passed in mime
-// type instead of the underlying codec's default mime type.
-func wrapCodec(c codecs.Codec, typeString string) codecs.Codec {
+// wrapCodecWithContentType takes a codecs.Codec and a mime type
+// string, returning a codecs.Codec that acts exactly like the passed
+// in codecs.Codec except that the ContentType() method will return
+// the passed in mime type instead of the underlying codec's default
+// mime type.
+func wrapCodecWithContentType(c codecs.Codec, typeString string) codecs.Codec {
 	return &contentTypeCodecWrapper{
 		codec:       c,
 		contentType: typeString,
