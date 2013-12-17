@@ -21,13 +21,14 @@ type Codec interface {
 	CanMarshalWithCallback() bool
 }
 
-// ContentTypeMatcherCodec is a Codec that has a method to be used for
-// matching content types against any content types that the codec can
-// support.
+// ContentTypeMatcherCodec is a Codec that has its own logic for
+// determining whether or not it can handle a content type.  This is
+// particularly useful for codecs that can handle more than one
+// content type.
 type ContentTypeMatcherCodec interface {
 	Codec
 
-	// ContentTypeSupported returns true if the passed in ContentType
-	// string is supported by this codec, false otherwise.
-	ContentTypeSupported(string) bool
+	// ContentTypeSupported returns true if the passed in content type
+	// can be handled by this codec, false otherwise
+	ContentTypeSupported(contentType string) bool
 }
