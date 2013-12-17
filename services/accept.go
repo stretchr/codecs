@@ -18,8 +18,7 @@ type AcceptEntry struct {
 	specificityCount int
 }
 
-// NewAcceptEntry sets up an AcceptEntry with the proper default
-// quality.
+// NewAcceptEntry returns a new *AcceptEntry with default values.
 func NewAcceptEntry() *AcceptEntry {
 	entry := &AcceptEntry{
 		Quality: 1.0,
@@ -27,6 +26,8 @@ func NewAcceptEntry() *AcceptEntry {
 	return entry
 }
 
+// ParseAcceptEntry parses a single entry within an Accept header into
+// a *AcceptEntry value.
 func ParseAcceptEntry(accept string) (*AcceptEntry, error) {
 
 	entry := NewAcceptEntry()
@@ -54,11 +55,11 @@ func ParseAcceptEntry(accept string) (*AcceptEntry, error) {
 	return entry, nil
 }
 
-// CompareTo compares two AcceptEntries and returns an integer
-// representing which of the two entries is more highly preferred.
-// Negative return values mean that the passed in entry is preferred,
-// positive values mean that the target entry is preferred, and zero
-// values mean that there is no preference.
+// CompareTo compares two *AcceptEntries and returns an integer
+// representing which of the two entries is preferred. Negative return
+// values mean that the passed in entry is preferred, positive values
+// mean that the target entry is preferred, and zero values mean that
+// there is no preference.
 func (entry *AcceptEntry) CompareTo(otherEntry *AcceptEntry) int {
 	if entry.Quality > otherEntry.Quality {
 		return 1
@@ -70,8 +71,8 @@ func (entry *AcceptEntry) CompareTo(otherEntry *AcceptEntry) int {
 }
 
 // AcceptTree is a binary tree that handles Accept header entries.
-// The left-most node will always be the most highly preferred entry,
-// and preference levels will decrease as you move right in the tree.
+// The left-most node will always be the most preferred entry and
+// preference will decrease from left to right.
 type AcceptTree struct {
 	Value *AcceptEntry
 	Size  int
@@ -79,7 +80,7 @@ type AcceptTree struct {
 	Right *AcceptTree
 }
 
-// Add adds an AcceptEntry to the AcceptTree, putting it in proper
+// Add adds an *AcceptEntry to the AcceptTree, putting it in proper
 // order of preference.
 func (tree *AcceptTree) Add(next *AcceptEntry) {
 	if tree.Value == nil {

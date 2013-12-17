@@ -97,8 +97,8 @@ func (s *WebCodecService) GetCodecForResponding(accept, extension string, hasCal
 }
 
 // GetCodec gets the codec to use to interpret the request based on the
-// content type.  The passed in content type can be a string or an
-// instance of ContentType.
+// content type.  The passed in content type can be a string or a
+// *ContentType.
 func (s *WebCodecService) GetCodec(contentTypeParam interface{}) (codecs.Codec, error) {
 
 	// make sure we have at least one codec
@@ -126,6 +126,11 @@ func (s *WebCodecService) GetCodec(contentTypeParam interface{}) (codecs.Codec, 
 		// match the content type
 		if matcher, ok := codec.(codecs.ContentTypeMatcherCodec); ok {
 			if matcher.ContentTypeSupported(contentType.MimeType) {
+				// For codecs.ContentTypeMatcherCodec values, the
+				// matched content type could be different than the
+				// codec's ContentType return value.  The wrapCodec
+				// function will override the default return value of
+				// ContentType() with the matched content type.
 				return wrapCodec(codec, contentType.MimeType), nil
 			}
 		} else if contentType.MimeType == strings.ToLower(codec.ContentType()) {

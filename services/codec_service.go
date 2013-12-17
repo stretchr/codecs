@@ -12,8 +12,8 @@ type CodecService interface {
 	GetCodecForResponding(accept, extension string, hasCallback bool) (codecs.Codec, error)
 
 	// GetCodec gets the codec to use to interpret the request based on the
-	// content type.  The contentType parameter can be anything that
-	// the implementation can interpret as a content type.
+	// content type.  It's up to the implementation of CodecService to
+	// decide which types of values it can accept as a content type.
 	GetCodec(contentType interface{}) (codecs.Codec, error)
 
 	// MarshalWithCodec marshals the specified object with the specified codec and options.
