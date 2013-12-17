@@ -10,7 +10,7 @@ type Codec interface {
 	// Unmarshal converts a []byte representation into an object.
 	Unmarshal(data []byte, obj interface{}) error
 
-	// ContentType gets the default ContentType for this codec.
+	// ContentType gets the default content type for this codec.
 	ContentType() string
 
 	// FileExtension returns the file extension by which the codec is represented.
