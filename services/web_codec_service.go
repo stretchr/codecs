@@ -97,8 +97,7 @@ func (s *WebCodecService) GetCodecForResponding(accept, extension string, hasCal
 }
 
 // GetCodec gets the codec to use to interpret the request based on the
-// content type.  The passed in content type can be a string or a
-// *ContentType.
+// content type.
 func (s *WebCodecService) GetCodec(contentType string) (codecs.Codec, error) {
 
 	// make sure we have at least one codec
