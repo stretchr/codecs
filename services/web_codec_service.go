@@ -139,7 +139,7 @@ func (s *WebCodecService) getCodecByContentType(contentType *ContentType) (codec
 
 	}
 
-	return nil, errors.New(fmt.Sprintf("Content type \"%s\" is not supported.", contentType))
+	return nil, errors.New(fmt.Sprintf("Content type \"%s\" is not supported.", contentType.MimeType))
 
 }
 

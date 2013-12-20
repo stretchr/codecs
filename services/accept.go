@@ -149,7 +149,21 @@ func (tree *AcceptTree) flattenToTarget(target *[]*AcceptEntry) {
 // http://www.w3.org/Protocols/rfc2616/rfc2616-sec14.html
 func OrderAcceptHeader(accept string) ([]*AcceptEntry, error) {
 	acceptTree := new(AcceptTree)
-	for _, rawEntry := range strings.Split(accept, ",") {
+	var (
+		end int
+		rawEntry string
+		remaining = accept
+	)
+	// At the time of this writing, strings.Split was using a lot of
+	// execution time, relative to the execution time of this
+	// function.  This logic is a fair bit faster.
+	for end != -1 {
+		end = strings.IndexRune(remaining, ',')
+		if end == -1 {
+			rawEntry = remaining
+		} else {
+			rawEntry = remaining[:end]
+		}
 		rawEntry = strings.TrimSpace(rawEntry)
 		if rawEntry != "" {
 			entry, err := ParseAcceptEntry(rawEntry)
@@ -158,7 +172,7 @@ func OrderAcceptHeader(accept string) ([]*AcceptEntry, error) {
 			}
 			acceptTree.Add(entry)
 		}
+		remaining = remaining[end+1:]
 	}
-
 	return acceptTree.Flatten(), nil
 }
