@@ -150,8 +150,8 @@ func (tree *AcceptTree) flattenToTarget(target *[]*AcceptEntry) {
 func OrderAcceptHeader(accept string) ([]*AcceptEntry, error) {
 	acceptTree := new(AcceptTree)
 	var (
-		end int
-		rawEntry string
+		end       int
+		rawEntry  string
 		remaining = accept
 	)
 	// At the time of this writing, strings.Split was using a lot of

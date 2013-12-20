@@ -31,8 +31,8 @@ func ParseContentType(rawType string) (*ContentType, error) {
 		return nil, nil
 	}
 	var (
-		end int
-		value string
+		end       int
+		value     string
 		remaining = rawType
 	)
 	contentType := new(ContentType)
