@@ -73,6 +73,17 @@ func (s *WebCodecService) GetCodecForResponding(accept, extension string, hasCal
 	}
 
 	if accept != "" {
+		// Try the simple case first
+		if !(strings.ContainsRune(accept, ',') || strings.ContainsRune(accept, ';')) {
+			accept = strings.TrimSpace(accept)
+			codec, err := s.getCodecByMimeString(accept)
+			if err != nil || codec != nil {
+				return codec, err
+			}
+		}
+
+		// If this doesn't match the simple case or simple matching
+		// failed to find a matching codec, do a full header parse
 		orderedAccept, err := OrderAcceptHeader(accept)
 		if err != nil {
 			return nil, err
@@ -111,36 +122,45 @@ func (s *WebCodecService) GetCodec(contentType string) (codecs.Codec, error) {
 	return s.getCodecByContentType(parsedContentType)
 }
 
-// getCodecByContentType is a helper method to retrieve a codec that
-// can handle the passed in *ContentType value.
-func (s *WebCodecService) getCodecByContentType(contentType *ContentType) (codecs.Codec, error) {
+// getCodecByMimeString is a helper method to retrieve a codec that
+// can handle the passed in mime type string.
+func (s *WebCodecService) getCodecByMimeString(mime string) (codecs.Codec, error) {
 
 	for _, codec := range s.codecs {
 
 		// default codec
-		if contentType == nil && codec.ContentType() == constants.ContentTypeJSON {
+		if mime == "" && codec.ContentType() == constants.ContentTypeJSON {
 			return codec, nil
 		}
 
 		// match the content type
 		if matcher, ok := codec.(codecs.ContentTypeMatcherCodec); ok {
-			if matcher.ContentTypeSupported(contentType.MimeType) {
+			if matcher.ContentTypeSupported(mime) {
 				// For codecs.ContentTypeMatcherCodec values, the
 				// matched content type could be different than the
 				// codec's ContentType return value.  The
 				// wrapCodecWithContentType function will override the
 				// default return value of ContentType() with the
 				// matched content type.
-				return wrapCodecWithContentType(codec, contentType.MimeType), nil
+				return wrapCodecWithContentType(codec, mime), nil
 			}
-		} else if contentType.MimeType == strings.ToLower(codec.ContentType()) {
+		} else if mime == strings.ToLower(codec.ContentType()) {
 			return codec, nil
 		}
 
 	}
 
-	return nil, errors.New(fmt.Sprintf("Content type \"%s\" is not supported.", contentType.MimeType))
+	return nil, errors.New(fmt.Sprintf("Content type \"%s\" is not supported.", mime))
 
+}
+
+// getCodecByContentType is a helper method to retrieve a codec that
+// can handle the passed in *ContentType value.
+func (s *WebCodecService) getCodecByContentType(contentType *ContentType) (codecs.Codec, error) {
+	if contentType == nil {
+		return s.getCodecByMimeString("")
+	}
+	return s.getCodecByMimeString(contentType.MimeType)
 }
 
 // MarshalWithCodec marshals the specified object with the specified codec and options.
