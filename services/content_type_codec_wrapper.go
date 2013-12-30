@@ -26,6 +26,11 @@ func wrapCodecWithContentType(c codecs.Codec, typeString string) codecs.Codec {
 }
 
 func (c *contentTypeCodecWrapper) Marshal(object interface{}, options map[string]interface{}) ([]byte, error) {
+	// Pass the matched content type as a codec option
+	if options == nil {
+		options = make(map[string]interface{})
+	}
+	options["matched_type"] = c.contentType
 	return c.codec.Marshal(object, options)
 }
 
