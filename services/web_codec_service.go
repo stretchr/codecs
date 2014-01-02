@@ -77,7 +77,7 @@ func (s *WebCodecService) GetCodecForResponding(accept, extension string, hasCal
 		if !(strings.ContainsRune(accept, ',') || strings.ContainsRune(accept, ';')) {
 			accept = strings.TrimSpace(accept)
 			codec, err := s.getCodecByMimeString(accept)
-			if err != nil || codec != nil {
+			if codec != nil {
 				return codec, err
 			}
 		}
