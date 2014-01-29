@@ -1,7 +1,5 @@
 package csv
 
-// TODO: consider having this in one place
-
 import (
 	"reflect"
 )
