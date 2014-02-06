@@ -146,7 +146,7 @@ func (c *CsvCodec) Unmarshal(data []byte, obj interface{}) error {
 		// multiple records
 
 		// make a new array to hold the data
-		rows := make([]map[string]interface{}, lenRecords-1)
+		rows := make([]interface{}, lenRecords-1)
 
 		// collect the fields
 		fields := records[0]

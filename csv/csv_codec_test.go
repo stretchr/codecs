@@ -156,21 +156,21 @@ func TestUnmarshal_MultipleObjects(t *testing.T) {
 	csvCodec.Unmarshal([]byte(raw), &obj)
 
 	if assert.NotNil(t, obj, "Unmarshal should make an object") {
-		if array, ok := obj.([]map[string]interface{}); ok {
+		if array, ok := obj.([]interface{}); ok {
 
 			if assert.Equal(t, 3, len(array), "Should be 3 items") {
 
-				assert.Equal(t, "row1a", array[0]["field_a"])
-				assert.Equal(t, "row1b", array[0]["field_b"])
-				assert.Equal(t, "row1c", array[0]["field_c"])
+				assert.Equal(t, "row1a", array[0].(map[string]interface{})["field_a"])
+				assert.Equal(t, "row1b", array[0].(map[string]interface{})["field_b"])
+				assert.Equal(t, "row1c", array[0].(map[string]interface{})["field_c"])
 
-				assert.Equal(t, "row2a", array[1]["field_a"])
-				assert.Equal(t, "row2b", array[1]["field_b"])
-				assert.Equal(t, "row2c", array[1]["field_c"])
+				assert.Equal(t, "row2a", array[1].(map[string]interface{})["field_a"])
+				assert.Equal(t, "row2b", array[1].(map[string]interface{})["field_b"])
+				assert.Equal(t, "row2c", array[1].(map[string]interface{})["field_c"])
 
-				assert.Equal(t, "row3a", array[2]["field_a"])
-				assert.Equal(t, "row3b", array[2]["field_b"])
-				assert.Equal(t, "row3c", array[2]["field_c"])
+				assert.Equal(t, "row3a", array[2].(map[string]interface{})["field_a"])
+				assert.Equal(t, "row3b", array[2].(map[string]interface{})["field_b"])
+				assert.Equal(t, "row3c", array[2].(map[string]interface{})["field_c"])
 
 			}
 
