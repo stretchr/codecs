@@ -123,6 +123,29 @@ func TestUnmarshal_SingleObject(t *testing.T) {
 
 }
 
+func TestUnmarshal_SingleObject_WithNoEndLinefeed(t *testing.T) {
+
+	raw := "field_a,field_b,field_c\nrow1a,row1b,row1c"
+
+	csvCodec := new(CsvCodec)
+
+	var obj interface{}
+	csvCodec.Unmarshal([]byte(raw), &obj)
+
+	if assert.NotNil(t, obj, "Unmarshal should make an object") {
+		if object, ok := obj.(map[string]interface{}); ok {
+
+			assert.Equal(t, "row1a", object["field_a"])
+			assert.Equal(t, "row1b", object["field_b"])
+			assert.Equal(t, "row1c", object["field_c"])
+
+		} else {
+			t.Errorf("Expected to be array type, not %s.", reflect.TypeOf(obj).Elem().Name())
+		}
+	}
+
+}
+
 func TestUnmarshal_MultipleObjects(t *testing.T) {
 
 	raw := "field_a,field_b,field_c\nrow1a,row1b,row1c\nrow2a,row2b,row2c\nrow3a,row3b,row3c"
