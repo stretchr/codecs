@@ -6,6 +6,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"github.com/stretchr/codecs/constants"
+	"github.com/stretchr/objx"
 	"reflect"
 	"strings"
 )
@@ -19,11 +20,22 @@ func (c *CsvCodec) Marshal(object interface{}, options map[string]interface{}) (
 	// collect the data rows in a consistent type
 
 	dataRows := make([]map[string]interface{}, 0)
+
 	switch object.(type) {
+	case objx.Map:
+		dataRows = append(dataRows, object.(objx.Map).Value().ObjxMap())
 	case map[string]interface{}:
 		dataRows = append(dataRows, object.(map[string]interface{}))
 	case []map[string]interface{}:
 		dataRows = object.([]map[string]interface{})
+	case []objx.Map:
+		for _, item := range object.([]objx.Map) {
+			dataRows = append(dataRows, item.Value().ObjxMap())
+		}
+	case []interface{}:
+		for _, item := range object.([]interface{}) {
+			dataRows = append(dataRows, item.(map[string]interface{}))
+		}
 	}
 
 	// collect the fields

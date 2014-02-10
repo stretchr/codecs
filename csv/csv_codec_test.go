@@ -4,7 +4,9 @@ import (
 	"fmt"
 	"github.com/stretchr/codecs"
 	"github.com/stretchr/codecs/constants"
+	"github.com/stretchr/objx"
 	"github.com/stretchr/testify/assert"
+	"log"
 	"reflect"
 	"testing"
 )
@@ -177,6 +179,41 @@ func TestUnmarshal_MultipleObjects(t *testing.T) {
 		} else {
 			t.Errorf("Expected to be array type, not %s.", reflect.TypeOf(obj).Elem().Name())
 		}
+	}
+
+}
+
+func TestUnMarshal_ObjxMap(t *testing.T) {
+
+	obj1 := objx.MSI("name", "Mat", "age", 30, "language", "en")
+	obj2 := objx.MSI("obj", obj1)
+	obj3 := objx.MSI("another_obj", obj2)
+
+	csvCodec := new(CsvCodec)
+	bytes, _ := csvCodec.Marshal(obj3, nil)
+
+	log.Printf("bytes = %s", string(bytes))
+
+	// unmarshal it back
+	var obj interface{}
+	csvCodec.Unmarshal(bytes, &obj)
+
+	if objmap, ok := obj.(map[string]interface{}); ok {
+		if objmap2, ok := objmap["another_obj"].(map[string]interface{}); ok {
+			if objmap3, ok := objmap2["obj"].(map[string]interface{}); ok {
+
+				assert.Equal(t, "Mat", objmap3["name"])
+				assert.Equal(t, 30, objmap3["age"])
+				assert.Equal(t, "en", objmap3["language"])
+
+			} else {
+				assert.True(t, false, "another_obj.obj should be msi")
+			}
+		} else {
+			assert.True(t, false, "another_obj should be msi")
+		}
+	} else {
+		assert.True(t, false, "obj should be msi")
 	}
 
 }
