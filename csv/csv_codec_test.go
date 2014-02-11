@@ -4,7 +4,9 @@ import (
 	"fmt"
 	"github.com/stretchr/codecs"
 	"github.com/stretchr/codecs/constants"
+	"github.com/stretchr/objx"
 	"github.com/stretchr/testify/assert"
+	"log"
 	"reflect"
 	"testing"
 )
@@ -123,6 +125,29 @@ func TestUnmarshal_SingleObject(t *testing.T) {
 
 }
 
+func TestUnmarshal_SingleObject_WithNoEndLinefeed(t *testing.T) {
+
+	raw := "field_a,field_b,field_c\nrow1a,row1b,row1c"
+
+	csvCodec := new(CsvCodec)
+
+	var obj interface{}
+	csvCodec.Unmarshal([]byte(raw), &obj)
+
+	if assert.NotNil(t, obj, "Unmarshal should make an object") {
+		if object, ok := obj.(map[string]interface{}); ok {
+
+			assert.Equal(t, "row1a", object["field_a"])
+			assert.Equal(t, "row1b", object["field_b"])
+			assert.Equal(t, "row1c", object["field_c"])
+
+		} else {
+			t.Errorf("Expected to be array type, not %s.", reflect.TypeOf(obj).Elem().Name())
+		}
+	}
+
+}
+
 func TestUnmarshal_MultipleObjects(t *testing.T) {
 
 	raw := "field_a,field_b,field_c\nrow1a,row1b,row1c\nrow2a,row2b,row2c\nrow3a,row3b,row3c"
@@ -133,27 +158,62 @@ func TestUnmarshal_MultipleObjects(t *testing.T) {
 	csvCodec.Unmarshal([]byte(raw), &obj)
 
 	if assert.NotNil(t, obj, "Unmarshal should make an object") {
-		if array, ok := obj.([]map[string]interface{}); ok {
+		if array, ok := obj.([]interface{}); ok {
 
 			if assert.Equal(t, 3, len(array), "Should be 3 items") {
 
-				assert.Equal(t, "row1a", array[0]["field_a"])
-				assert.Equal(t, "row1b", array[0]["field_b"])
-				assert.Equal(t, "row1c", array[0]["field_c"])
+				assert.Equal(t, "row1a", array[0].(map[string]interface{})["field_a"])
+				assert.Equal(t, "row1b", array[0].(map[string]interface{})["field_b"])
+				assert.Equal(t, "row1c", array[0].(map[string]interface{})["field_c"])
 
-				assert.Equal(t, "row2a", array[1]["field_a"])
-				assert.Equal(t, "row2b", array[1]["field_b"])
-				assert.Equal(t, "row2c", array[1]["field_c"])
+				assert.Equal(t, "row2a", array[1].(map[string]interface{})["field_a"])
+				assert.Equal(t, "row2b", array[1].(map[string]interface{})["field_b"])
+				assert.Equal(t, "row2c", array[1].(map[string]interface{})["field_c"])
 
-				assert.Equal(t, "row3a", array[2]["field_a"])
-				assert.Equal(t, "row3b", array[2]["field_b"])
-				assert.Equal(t, "row3c", array[2]["field_c"])
+				assert.Equal(t, "row3a", array[2].(map[string]interface{})["field_a"])
+				assert.Equal(t, "row3b", array[2].(map[string]interface{})["field_b"])
+				assert.Equal(t, "row3c", array[2].(map[string]interface{})["field_c"])
 
 			}
 
 		} else {
 			t.Errorf("Expected to be array type, not %s.", reflect.TypeOf(obj).Elem().Name())
 		}
+	}
+
+}
+
+func TestUnMarshal_ObjxMap(t *testing.T) {
+
+	obj1 := objx.MSI("name", "Mat", "age", 30, "language", "en")
+	obj2 := objx.MSI("obj", obj1)
+	obj3 := objx.MSI("another_obj", obj2)
+
+	csvCodec := new(CsvCodec)
+	bytes, _ := csvCodec.Marshal(obj3, nil)
+
+	log.Printf("bytes = %s", string(bytes))
+
+	// unmarshal it back
+	var obj interface{}
+	csvCodec.Unmarshal(bytes, &obj)
+
+	if objmap, ok := obj.(map[string]interface{}); ok {
+		if objmap2, ok := objmap["another_obj"].(map[string]interface{}); ok {
+			if objmap3, ok := objmap2["obj"].(map[string]interface{}); ok {
+
+				assert.Equal(t, "Mat", objmap3["name"])
+				assert.Equal(t, 30, objmap3["age"])
+				assert.Equal(t, "en", objmap3["language"])
+
+			} else {
+				assert.True(t, false, "another_obj.obj should be msi")
+			}
+		} else {
+			assert.True(t, false, "another_obj should be msi")
+		}
+	} else {
+		assert.True(t, false, "obj should be msi")
 	}
 
 }
