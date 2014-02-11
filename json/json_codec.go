@@ -5,6 +5,11 @@ import (
 	"github.com/stretchr/codecs/constants"
 )
 
+var validJsonContentTypes = []string{
+	"application/json",
+	"text/json",
+}
+
 // JsonCodec converts objects to and from JSON.
 type JsonCodec struct{}
 
@@ -31,4 +36,13 @@ func (c *JsonCodec) FileExtension() string {
 // CanMarshalWithCallback returns whether this codec is capable of marshalling a response containing a callback.
 func (c *JsonCodec) CanMarshalWithCallback() bool {
 	return false
+}
+
+func (c *JsonCodec) ContentTypeSupported(contentType string) bool {
+	for _, supportedType := range validJsonContentTypes {
+		if supportedType == contentType {
+			return true
+		}
+	}
+	return contentType == c.ContentType()
 }

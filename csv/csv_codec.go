@@ -11,6 +11,11 @@ import (
 	"strings"
 )
 
+var validCsvContentTypes = []string{
+	"application/csv",
+	"text/csv",
+}
+
 // CsvCodec converts objects to and from CSV format.
 type CsvCodec struct{}
 
@@ -196,6 +201,15 @@ func (c *CsvCodec) FileExtension() string {
 // CanMarshalWithCallback returns whether this codec is capable of marshalling a response containing a callback.
 func (c *CsvCodec) CanMarshalWithCallback() bool {
 	return false
+}
+
+func (c *CsvCodec) ContentTypeSupported(contentType string) bool {
+	for _, supportedType := range validCsvContentTypes {
+		if supportedType == contentType {
+			return true
+		}
+	}
+	return contentType == c.ContentType()
 }
 
 // mapFromFieldsAndRow makes a map[string]interface{} from the given fields and

@@ -7,6 +7,11 @@ import (
 	stewstrings "github.com/stretchr/stew/strings"
 )
 
+var validJsonpContentTypes = []string{
+	"text/javascript",
+	"application/javascript",
+}
+
 // ErrorMissingCallback is the error for when a callback option is expected but missing.
 var ErrorMissingCallback = errors.New("A callback is required for JSONP")
 
@@ -71,4 +76,13 @@ func (c *JsonPCodec) FileExtension() string {
 // CanMarshalWithCallback returns whether this codec is capable of marshalling a response containing a callback.
 func (c *JsonPCodec) CanMarshalWithCallback() bool {
 	return true
+}
+
+func (c *JsonPCodec) ContentTypeSupported(contentType string) bool {
+	for _, supportedType := range validJsonpContentTypes {
+		if supportedType == contentType {
+			return true
+		}
+	}
+	return contentType == c.ContentType()
 }
