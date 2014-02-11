@@ -148,6 +148,13 @@ func TestGetCodecForResponding(t *testing.T) {
 		assert.Equal(t, constants.ContentTypeJSONP, codec.ContentType(), "ContentTypeJavaScript 5")
 	}
 
+	// File extension takes precedence
+
+	codec, _ = service.GetCodecForResponding(constants.ContentTypeJSON, constants.FileExtensionXML, false)
+	if assert.NotNil(t, codec, "Return of GetCodecForAcceptStringOrExtension") {
+		assert.Equal(t, constants.ContentTypeXML, codec.ContentType(), "Extension takes precedence")
+	}
+
 }
 
 func TestMarshalWithCodec(t *testing.T) {
