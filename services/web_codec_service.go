@@ -66,10 +66,17 @@ func (s *WebCodecService) GetCodecForResponding(accept, extension string, hasCal
 	// make sure we have at least one codec
 	s.assertCodecs()
 
-	// is there a callback?  If so, look for JSONP
 	if hasCallback {
 		for _, codec := range s.codecs {
-			if codec.ContentType() == constants.ContentTypeJSONP {
+			if codec.CanMarshalWithCallback() {
+				return codec, nil
+			}
+		}
+	}
+
+	if extension != "" {
+		for _, codec := range s.codecs {
+			if strings.ToLower(codec.FileExtension()) == strings.ToLower(extension) {
 				return codec, nil
 			}
 		}
@@ -95,14 +102,6 @@ func (s *WebCodecService) GetCodecForResponding(accept, extension string, hasCal
 			if codec, err := s.getCodecByContentType(entry.ContentType); err == nil {
 				return codec, nil
 			}
-		}
-	}
-
-	for _, codec := range s.codecs {
-		if strings.ToLower(codec.FileExtension()) == strings.ToLower(extension) {
-			return codec, nil
-		} else if hasCallback && codec.CanMarshalWithCallback() {
-			return codec, nil
 		}
 	}
 

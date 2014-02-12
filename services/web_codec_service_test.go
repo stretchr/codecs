@@ -148,6 +148,22 @@ func TestGetCodecForResponding(t *testing.T) {
 		assert.Equal(t, constants.ContentTypeJSONP, codec.ContentType(), "ContentTypeJavaScript 5")
 	}
 
+	// hasCallback takes precedence over everything else
+
+	codec, _ = service.GetCodecForResponding(constants.ContentTypeJSON, constants.FileExtensionXML, true)
+
+	if assert.NotNil(t, codec, "Return of GetCodecForAcceptStringOrExtension") {
+		assert.Equal(t, constants.ContentTypeJSONP, codec.ContentType(), "HasCallback takes precedence over all")
+	}
+
+	// File extension takes precedence over accept header
+
+	codec, _ = service.GetCodecForResponding(constants.ContentTypeJSON, constants.FileExtensionXML, false)
+
+	if assert.NotNil(t, codec, "Return of GetCodecForAcceptStringOrExtension") {
+		assert.Equal(t, constants.ContentTypeXML, codec.ContentType(), "Extension takes precedence over accept")
+	}
+
 }
 
 func TestMarshalWithCodec(t *testing.T) {
