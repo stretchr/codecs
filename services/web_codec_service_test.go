@@ -166,6 +166,29 @@ func TestGetCodecForResponding(t *testing.T) {
 
 }
 
+func TestGetCodecForResponding_Remove(t *testing.T) {
+
+	service := NewWebCodecService()
+	var codec codecs.Codec
+
+	// File extension takes precedence over accept header
+
+	codec, _ = service.GetCodecForResponding(constants.ContentTypeJSON, constants.FileExtensionXML, false)
+
+	if assert.NotNil(t, codec, "Return of GetCodecForAcceptStringOrExtension") {
+		assert.Equal(t, constants.ContentTypeXML, codec.ContentType(), "Extension takes precedence over accept")
+	}
+
+	service.RemoveCodec(constants.ContentTypeXML)
+
+	codec, _ = service.GetCodecForResponding(constants.ContentTypeJSON, constants.FileExtensionXML, false)
+
+	if assert.NotNil(t, codec, "Return of GetCodecForAcceptStringOrExtension") {
+		assert.Equal(t, constants.ContentTypeJSON, codec.ContentType(), "XML codec should have been removed")
+	}
+
+}
+
 func TestMarshalWithCodec(t *testing.T) {
 
 	testCodec := new(test.TestCodec)

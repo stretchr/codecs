@@ -49,6 +49,15 @@ func (s *WebCodecService) AddCodec(codec codecs.Codec) {
 	s.codecs = append(s.codecs, codec)
 }
 
+// RemoveCodec removes a codec from the list of codecs by content type
+func (s *WebCodecService) RemoveCodec(contentType string) {
+	for i, v := range s.codecs {
+		if v.ContentType() == contentType {
+			s.codecs = append(s.codecs[:i], s.codecs[i+1:]...)
+		}
+	}
+}
+
 func (s *WebCodecService) assertCodecs() {
 	if len(s.codecs) == 0 {
 		panic("codecs: No codecs are installed - use AddCodec to add some or use NewWebCodecService for default codecs.")
