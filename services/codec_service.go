@@ -28,4 +28,7 @@ type CodecService interface {
 
 	// AddCodec adds the specified codec to the installed codecs list.
 	AddCodec(codecs.Codec)
+
+	// RemoveCodec removes a codec from the list of codecs by content type
+	RemoveCodec(contentType string)
 }
