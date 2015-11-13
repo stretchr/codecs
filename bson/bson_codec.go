@@ -2,7 +2,7 @@ package bson
 
 import (
 	"github.com/stretchr/codecs/constants"
-	"labix.org/v2/mgo/bson"
+	"gopkg.in/mgo.v2/bson"
 )
 
 // BsonCodec converts objects to and from BSON.
